@@ -4,7 +4,9 @@ import app.audio.Collections.Playlist;
 import app.audio.Collections.Podcast;
 import app.audio.Files.Episode;
 import app.audio.Files.Song;
-import app.user.User;
+import app.users.User;
+import app.users.userTypes.NormalUser;
+import app.utils.Enums;
 import fileio.input.EpisodeInput;
 import fileio.input.PodcastInput;
 import fileio.input.SongInput;
@@ -35,8 +37,12 @@ public final class Admin {
     public static void setUsers(final List<UserInput> userInputList) {
         users = new ArrayList<>();
         for (UserInput userInput : userInputList) {
-            users.add(new User(userInput.getUsername(), userInput.getAge(), userInput.getCity()));
+            users.add(new NormalUser(userInput.getUsername(), userInput.getAge(), userInput.getCity()));
         }
+    }
+
+    public static void setUser(User newUser) {
+        users.add(newUser);
     }
 
     /**
@@ -53,6 +59,9 @@ public final class Admin {
         }
     }
 
+    public static void setSong(Song song) {
+        Admin.songs.add(song);
+    }
 
     /**
      * Sets podcasts.
@@ -98,7 +107,9 @@ public final class Admin {
     public static List<Playlist> getPlaylists() {
         List<Playlist> playlists = new ArrayList<>();
         for (User user : users) {
-            playlists.addAll(user.getPlaylists());
+            if (user.getType().equals("user")) {
+                playlists.addAll(((NormalUser)user).getPlaylists());
+            }
         }
         return playlists;
     }
@@ -131,7 +142,9 @@ public final class Admin {
         }
 
         for (User user : users) {
-            user.simulateTime(elapsed);
+            if (user.getType().equals("user")) {
+                ((NormalUser)user).simulateTime(elapsed);
+            }
         }
     }
 
@@ -175,6 +188,20 @@ public final class Admin {
             count++;
         }
         return topPlaylists;
+    }
+
+    public static List<String> getOnlineUsers() {
+        List<User> normalUsers = new ArrayList<>(users);
+        List<String> onlineUsers = new ArrayList<>();
+        for(User user : normalUsers) {
+            if (user.getType().equals("user")) {
+                if (((NormalUser)user).getConnectionStatus() == Enums.connectionStatus.ONLINE) {
+                    onlineUsers.add(user.getUsername());
+                }
+            }
+        }
+        return onlineUsers;
+
     }
 
     /**

@@ -1,9 +1,14 @@
 package app;
 
+import app.audio.Collections.AlbumOutput;
 import app.audio.Collections.PlaylistOutput;
+import app.pageSystem.userPages.HomePage;
 import app.player.PlayerStats;
 import app.searchBar.Filters;
-import app.user.User;
+import app.users.User;
+import app.users.userTypes.Artist;
+import app.users.userTypes.NormalUser;
+import app.utils.Enums;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.CommandInput;
@@ -30,11 +35,14 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode search(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) { // ADAUGAT!!!
+            return userOffline(commandInput);
+        }
         Filters filters = new Filters(commandInput.getFilters());
         String type = commandInput.getType();
 
-        ArrayList<String> results = user.search(filters, type);
+        ArrayList<String> results = normalUser.search(filters, type);
         String message = "Search returned " + results.size() + " results";
 
         ObjectNode objectNode = objectMapper.createObjectNode();
@@ -54,9 +62,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode select(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-
-        String message = user.select(commandInput.getItemNumber());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.select(commandInput.getItemNumber());
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -74,8 +84,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode load(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.load();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.load();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -93,8 +106,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode playPause(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.playPause();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.playPause();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -112,7 +128,10 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode repeat(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
+        NormalUser user = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (user.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
         String message = user.repeat();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
@@ -131,9 +150,12 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode shuffle(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
         Integer seed = commandInput.getSeed();
-        String message = user.shuffle(seed);
+        String message = normalUser.shuffle(seed);
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -151,8 +173,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode forward(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.forward();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.forward();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -170,8 +195,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode backward(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.backward();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.backward();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -189,8 +217,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode like(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.like();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.like();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -208,8 +239,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode next(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.next();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.next();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -227,8 +261,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode prev(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.prev();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.prev();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -246,9 +283,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode createPlaylist(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.createPlaylist(commandInput.getPlaylistName(),
-                                             commandInput.getTimestamp());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.createPlaylist(commandInput.getPlaylistName(), commandInput.getTimestamp());
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -266,8 +305,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode addRemoveInPlaylist(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.addRemoveInPlaylist(commandInput.getPlaylistId());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.addRemoveInPlaylist(commandInput.getPlaylistId());
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -285,8 +327,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode switchVisibility(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.switchPlaylistVisibility(commandInput.getPlaylistId());
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.switchPlaylistVisibility(commandInput.getPlaylistId());
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -297,6 +342,25 @@ public final class CommandRunner {
         return objectNode;
     }
 
+    public static ObjectNode switchConnectionStatus(CommandInput commandInput) {
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        String message;
+        if (normalUser == null) {
+            message = "The username " + commandInput.getUsername() + " doesn't exist.";
+        } else {
+            message = normalUser.switchUserConnectionStatus();
+        }
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+
     /**
      * Show playlists object node.
      *
@@ -304,8 +368,8 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode showPlaylists(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        ArrayList<PlaylistOutput> playlists = user.showPlaylists();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        ArrayList<PlaylistOutput> playlists = normalUser.showPlaylists();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -323,8 +387,11 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode follow(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String message = user.follow();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.follow();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -342,8 +409,8 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode status(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        PlayerStats stats = user.getPlayerStats();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        PlayerStats stats = normalUser.getPlayerStats();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -361,14 +428,67 @@ public final class CommandRunner {
      * @return the object node
      */
     public static ObjectNode showLikedSongs(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        ArrayList<String> songs = user.showPreferredSongs();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        ArrayList<String> songs = normalUser.showPreferredSongs();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
         objectNode.put("user", commandInput.getUsername());
         objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("result", objectMapper.valueToTree(songs));
+
+        return objectNode;
+    }
+
+    public static ObjectNode addUser(CommandInput commandInput) {
+        String message = User.addUser(commandInput);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+    public static ObjectNode addAlbum(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        String message = Artist.addAlbum(commandInput, user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+    public static ObjectNode showAlbums(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        ArrayList<AlbumOutput> albumOutput = Artist.showAlbums(user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("result", objectMapper.valueToTree(albumOutput));
+
+        return objectNode;
+    }
+
+    public static ObjectNode printCurrentPage(CommandInput commandInput) {
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        HomePage userHomePage = normalUser.printCurrentPage();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", objectMapper.valueToTree("Liked songs:\n\t" +
+                userHomePage.getTopLikedSongs() + "\n\n" + "Followed playlists:\n\t" +
+                userHomePage.getTopFollowedPlaylists()));
 
         return objectNode;
     }
@@ -380,8 +500,8 @@ public final class CommandRunner {
      * @return the preferred genre
      */
     public static ObjectNode getPreferredGenre(final CommandInput commandInput) {
-        User user = Admin.getUser(commandInput.getUsername());
-        String preferredGenre = user.getPreferredGenre();
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        String preferredGenre = normalUser.getPreferredGenre();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -423,6 +543,33 @@ public final class CommandRunner {
         objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("result", objectMapper.valueToTree(playlists));
 
+        return objectNode;
+    }
+
+    public static ObjectNode getOnlineUsers(CommandInput commandInput) {
+        List<String> users = Admin.getOnlineUsers();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("result", objectMapper.valueToTree(users));
+
+        return objectNode;
+    }
+
+    public static ObjectNode userOffline(CommandInput commandInput) {
+        String commandName = commandInput.getCommand();
+        String message = commandInput.getUsername() + " is offline.";
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+        if (commandName.equals("search")) {
+            ArrayList<String> results = new ArrayList<>();
+            objectNode.put("results", objectMapper.valueToTree(results));
+        }
         return objectNode;
     }
 }

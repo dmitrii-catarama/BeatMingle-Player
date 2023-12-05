@@ -135,4 +135,8 @@ public final class Playlist extends AudioCollection {
             return count == Integer.parseInt(query);
         }
     }
+
+    public Integer getTotalLikes() {
+        return songs.stream().mapToInt(Song::getLikes).sum();
+    }
 }
