@@ -1,9 +1,12 @@
 package app;
 
+import app.audio.Collections.Album;
 import app.audio.Collections.Playlist;
 import app.audio.Collections.Podcast;
 import app.audio.Files.Episode;
 import app.audio.Files.Song;
+import app.audio.LibraryEntry;
+import app.searchBar.UserSearch;
 import app.users.User;
 import app.users.userTypes.NormalUser;
 import app.utils.Enums;
@@ -23,6 +26,7 @@ public final class Admin {
     private static List<User> users = new ArrayList<>();
     private static List<Song> songs = new ArrayList<>();
     private static List<Podcast> podcasts = new ArrayList<>();
+    private static List<Album> albums = new ArrayList<>();
     private static int timestamp = 0;
     private static final int LIMIT = 5;
 
@@ -81,6 +85,19 @@ public final class Admin {
         }
     }
 
+    public static void setAlbum(final Album album) {
+        albums.add(album);
+    }
+
+    /**
+     * Gets users.
+     *
+     * @return the users
+     */
+    public static List<User> getUsers() {
+        return new ArrayList<>(users);
+    }
+
     /**
      * Gets songs.
      *
@@ -97,6 +114,15 @@ public final class Admin {
      */
     public static List<Podcast> getPodcasts() {
         return new ArrayList<>(podcasts);
+    }
+
+    /**
+     * Gets albums.
+     *
+     * @return the albums
+     */
+    public static List<Album> getAlbums() {
+        return new ArrayList<>(albums);
     }
 
     /**

@@ -121,7 +121,20 @@ public final class SearchBar {
                 if (filters.getOwner() != null) {
                     entries = filterByOwner(entries, filters.getOwner());
                 }
+                break;
+            case "artist":
+                entries = UserSearch.getCreators(Admin.getUsers(), "artist");
 
+                if (filters.getName() != null) {
+                    entries = filterByName(entries, filters.getName());
+                }
+                break;
+            case "host":
+                entries = UserSearch.getCreators(Admin.getUsers(), "host");
+
+                if (filters.getName() != null) {
+                    entries = filterByName(entries, filters.getName());
+                }
                 break;
             default:
                 entries = new ArrayList<>();
