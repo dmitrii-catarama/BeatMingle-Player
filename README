@@ -1,0 +1,3 @@
+In clasa Artist in metoda addEvent am folosit stream() API ? cu ajutorul lui chatGPT.
+Am folosit clasa DateTimeFormatter in metoda verifyDate din clasa Event pentru
+a verifica daca formatul datei unui event este corect. GPT

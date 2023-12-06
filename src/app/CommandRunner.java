@@ -480,18 +480,46 @@ public final class CommandRunner {
 
     public static ObjectNode printCurrentPage(CommandInput commandInput) {
         NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
-        HomePage userHomePage = normalUser.printCurrentPage();
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.printCurrentPage();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+    public static ObjectNode addEvent(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        String message = Artist.addEvent(commandInput, user);
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
         objectNode.put("user", commandInput.getUsername());
         objectNode.put("timestamp", commandInput.getTimestamp());
-        objectNode.put("message", objectMapper.valueToTree("Liked songs:\n\t" +
-                userHomePage.getTopLikedSongs() + "\n\n" + "Followed playlists:\n\t" +
-                userHomePage.getTopFollowedPlaylists()));
+        objectNode.put("message", message);
 
         return objectNode;
     }
+
+    public static ObjectNode addMerch(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        String message = Artist.addMerch(commandInput, user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
 
     /**
      * Gets preferred genre.

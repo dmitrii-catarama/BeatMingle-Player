@@ -6,6 +6,8 @@ import app.audio.Collections.PlaylistOutput;
 import app.audio.Files.AudioFile;
 import app.audio.Files.Song;
 import app.audio.LibraryEntry;
+import app.pageSystem.creatorsPage.ArtistPage;
+import app.pageSystem.creatorsPage.HostPage;
 import app.pageSystem.userPages.HomePage;
 import app.pageSystem.userPages.LikedContentPage;
 import app.player.Player;
@@ -27,7 +29,9 @@ public class NormalUser extends User {
     @Getter
     private ArrayList<Playlist> followedPlaylists;
     private final Player player;
+    @Getter
     private final SearchBar searchBar;
+    @Getter
     private boolean lastSearched;
     @Getter
     private Enums.connectionStatus connectionStatus;
@@ -46,6 +50,10 @@ public class NormalUser extends User {
         searchBar = new SearchBar(username);
         lastSearched = false;
         connectionStatus = Enums.connectionStatus.ONLINE;
+    }
+
+    public void setHomePage(HomePage homePage) {
+        this.homePage = homePage;
     }
 
 
@@ -75,7 +83,11 @@ public class NormalUser extends User {
         if (selected == null)
             return "The selected ID is too high.";
 
-        return "Successfully selected %s.".formatted(selected.getName());
+        if (searchBar.getLastSearchType().equals("artist")) {
+            return "Successfully selected %s's page.".formatted(selected.getName());
+        } else {
+            return "Successfully selected %s.".formatted(selected.getName());
+        }
     }
 
 
@@ -353,14 +365,20 @@ public class NormalUser extends User {
         return "This user's preferred genre is %s.".formatted(preferredGenre);
     }
 
+    public String printCurrentPage() {
+        if (searchBar.getLastSearchType() == null) {
+            HomePage homePage = new HomePage();
+            return homePage.printPage(this);
+        } else if (searchBar.getLastSearchType().equals("artist")) {
+            String artistName = searchBar.getLastSelected().toString();
+            return ArtistPage.printPage(artistName);
+        }
+//        } else if (searchBar.getLastSearchType().equals("host")) {
+//              String hostName = searchBar.getLastSelected().toString();
+//            return HostPage.printPage(hostName);
+//        }
 
-    public HomePage printCurrentPage() {
-        ArrayList<String> topLikedSongs = HomePage.setLikedSongs(likedSongs);
-        ArrayList<String> followedPlaylist = HomePage.setFollowedPlaylists(playlists);
-
-        homePage = new HomePage(topLikedSongs, followedPlaylist, getUsername());
-
-        return homePage;
+        return null;
     }
 
 

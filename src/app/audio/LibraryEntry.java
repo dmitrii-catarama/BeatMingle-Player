@@ -119,4 +119,9 @@ public abstract class LibraryEntry {
     public boolean matchesFollowers(final String followers) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

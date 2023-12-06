@@ -3,6 +3,8 @@ package app.pageSystem.userPages;
 import app.audio.Collections.Playlist;
 import app.audio.Files.Song;
 import app.pageSystem.BasePage;
+import app.users.User;
+import app.users.userTypes.NormalUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
@@ -19,6 +21,10 @@ public class HomePage extends BasePage {
     @Getter
     private ArrayList<String> topFollowedPlaylists;
 
+
+    public HomePage() {
+        super(null);
+    }
     public HomePage(ArrayList<String> topLikedSongs, ArrayList<String> topFollowedPlaylists,
                     String owner) {
 
@@ -58,6 +64,20 @@ public class HomePage extends BasePage {
         }
 
         return followedPlaylists;
+    }
+
+    @Override
+    public String printPage(User user) {
+        NormalUser normalUser = (NormalUser)user;
+        ArrayList<String> topLikedSongs = HomePage.setLikedSongs(normalUser.getLikedSongs());
+        ArrayList<String> followedPlaylist =
+                HomePage.setFollowedPlaylists(normalUser.getPlaylists());
+
+        normalUser.setHomePage(new HomePage(topLikedSongs, followedPlaylist,
+                normalUser.getUsername()));
+
+        return "Liked songs:\n\t" + topLikedSongs + "\n\n" + "Followed playlists:\n\t" +
+                followedPlaylist;
     }
 
 }
