@@ -36,7 +36,7 @@ public final class CommandRunner {
      */
     public static ObjectNode search(final CommandInput commandInput) {
         NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
-        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) { // ADAUGAT!!!
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
             return userOffline(commandInput);
         }
         Filters filters = new Filters(commandInput.getFilters());
@@ -452,6 +452,18 @@ public final class CommandRunner {
         return objectNode;
     }
 
+    public static ObjectNode deleteUser(CommandInput commandInput) {
+        String message = Admin.deleteUser(commandInput);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
     public static ObjectNode addAlbum(CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
         String message = Artist.addAlbum(commandInput, user);
@@ -581,6 +593,17 @@ public final class CommandRunner {
         objectNode.put("command", commandInput.getCommand());
         objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("result", objectMapper.valueToTree(users));
+
+        return objectNode;
+    }
+
+    public static ObjectNode getAllUsers(CommandInput commandInput) {
+        List<String> allUsers = Admin.getAllUsers();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("result", objectMapper.valueToTree(allUsers));
 
         return objectNode;
     }

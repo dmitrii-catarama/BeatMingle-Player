@@ -43,18 +43,24 @@ public class Album extends AudioCollection{
         this.songs = songs;
     }
 
+    /**
+     * matches description of an Album
+     * @param description the description of album
+     * @return boolean
+     */
+    @Override
+    public boolean matchesDescriptions(final String description) {
+        return this.getDescription().equalsIgnoreCase(description);
+    }
 
     @Override
     public int getNumberOfTracks() {
         return songs.size();
     }
 
-
     @Override
     public AudioFile getTrackByIndex(int index) {
         return songs.get(index);
     }
-
-
 
 }

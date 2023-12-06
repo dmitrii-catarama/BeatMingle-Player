@@ -1,5 +1,6 @@
 package app.player;
 
+import app.audio.Collections.Album;
 import app.audio.Collections.AudioCollection;
 import app.audio.Files.AudioFile;
 import app.audio.LibraryEntry;
@@ -72,7 +73,9 @@ public final class Player {
             return new PlayerSource(Enums.PlayerSourceType.LIBRARY, (AudioFile) entry);
         } else if ("playlist".equals(type)) {
             return new PlayerSource(Enums.PlayerSourceType.PLAYLIST, (AudioCollection) entry);
-        } else if ("podcast".equals(type)) {
+        } else if ("album".equals(type)) {
+            return new PlayerSource(Enums.PlayerSourceType.ALBUM, (AudioCollection) entry);
+        }else if ("podcast".equals(type)) {
             return createPodcastSource((AudioCollection) entry, bookmarks);
         }
 

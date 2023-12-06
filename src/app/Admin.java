@@ -5,15 +5,11 @@ import app.audio.Collections.Playlist;
 import app.audio.Collections.Podcast;
 import app.audio.Files.Episode;
 import app.audio.Files.Song;
-import app.audio.LibraryEntry;
-import app.searchBar.UserSearch;
 import app.users.User;
+import app.users.userTypes.Artist;
 import app.users.userTypes.NormalUser;
 import app.utils.Enums;
-import fileio.input.EpisodeInput;
-import fileio.input.PodcastInput;
-import fileio.input.SongInput;
-import fileio.input.UserInput;
+import fileio.input.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -97,7 +93,13 @@ public final class Admin {
     public static List<User> getUsers() {
         return new ArrayList<>(users);
     }
+    public static List<Song> getAdminSongs() {
+        return songs;
+    }
 
+    public static List<Album> getAdminAlbums() {
+        return albums;
+    }
     /**
      * Gets songs.
      *
@@ -153,6 +155,33 @@ public final class Admin {
             }
         }
         return null;
+    }
+
+
+    public static String deleteUser(CommandInput commandInput) {
+        User user = getUser(commandInput.getUsername());
+
+        if (user == null) {
+            return "The username " + commandInput.getUsername() + " doesn't exist.";
+        }
+
+        switch (user.getType()) {
+            case "user" -> {
+                ((NormalUser)user).deleteNormalUserData();
+                users.remove(user);
+                return commandInput.getUsername() + " was successfully deleted.";
+            }
+            case "artist" -> {
+                if (((Artist)user).deleteArtistData()) {
+                    users.remove(user);
+                    return commandInput.getUsername() + " was successfully deleted.";
+                } else {
+                    return commandInput.getUsername() + " can't be deleted.";
+                }
+            }
+        }
+
+        return "YOU WANT TO REMOVE HOST???";
     }
 
     /**
@@ -228,6 +257,28 @@ public final class Admin {
         }
         return onlineUsers;
 
+    }
+
+    public static List<String> getAllUsers() {
+        List<String> normalUsers = new ArrayList<>();
+        List<String> artists = new ArrayList<>();
+        List<String> hosts = new ArrayList<>();
+
+        for (User user : users) {
+            switch (user.getType()) {
+                case "user" -> normalUsers.add(user.getUsername());
+                case "artist" -> artists.add(user.getUsername());
+                case "host" -> hosts.add(user.getUsername());
+                default -> System.out.println("Invalid user type");
+            }
+        }
+
+        List<String> allUsers = new ArrayList<>();
+        allUsers.addAll(normalUsers);
+        allUsers.addAll(artists);
+        allUsers.addAll(hosts);
+
+        return allUsers;
     }
 
     /**

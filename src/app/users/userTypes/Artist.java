@@ -6,12 +6,15 @@ import app.audio.Collections.AlbumOutput;
 import app.audio.Collections.Utilities.forArtist.Event;
 import app.audio.Collections.Utilities.forArtist.Merch;
 import app.audio.Files.Song;
+import app.player.PlayerStats;
 import app.users.User;
+import app.utils.Enums;
 import fileio.input.CommandInput;
 import fileio.input.SongInput;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Artist extends User {
@@ -85,6 +88,7 @@ public class Artist extends User {
         for (Song song : newAlbum.getSongs()) {
             Admin.setSong(song);
         }
+        Admin.setAlbum(newAlbum);
 
         return user.getUsername() + " has added new album successfully.";
     }
@@ -156,5 +160,74 @@ public class Artist extends User {
                 commandInput.getDescription()));
 
         return artist.getUsername() + " has added new merchandise successfully.";
+    }
+
+    public boolean deleteArtistData() {
+        List<User> users = Admin.getUsers();
+        List<Album> allAlbums = Admin.getAdminAlbums();
+        List<Song> allSongs = Admin.getAdminSongs();
+        List<NormalUser> normalUsers = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getType().equals("user")) {
+                normalUsers.add((NormalUser)user);
+            }
+        }
+
+        // verificare daca nici un user normal nu se afla pe pagina artistului si daca nu se
+        // asculta un cantec din albumurile acestuia
+        for (NormalUser normalUser : normalUsers) {
+            if (normalUser.getConnectionStatus().equals(Enums.connectionStatus.OFFLINE)) {
+                continue;
+            }
+
+            String lastSearchType = normalUser.getSearchBar().getLastSearchType();
+            if (lastSearchType == null || !lastSearchType.equals("artist")) {
+                continue;
+            }
+
+            boolean lastSearched = normalUser.isLastSearched();
+            String lastSelected = normalUser.getSearchBar().getLastSelected().toString();
+
+            if (!lastSearched && lastSelected != null) {
+                if (this.getUsername().equals(lastSelected)) {
+                    return false;
+                }
+            }
+        }
+
+        for (NormalUser normalUser : normalUsers) {
+            PlayerStats playerStats = normalUser.getPlayerStats();
+            String songInPlayer = playerStats.getName();
+
+            if (songInPlayer == null) {
+                continue;
+            }
+
+            for (Album album : this.getAlbums()) {
+                for (Song song : album.getSongs()) {
+                    if (song.getName().equals(songInPlayer)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        for (Album album : this.getAlbums()) {
+            for (Song song : album.getSongs()) {
+                allSongs.remove(song);
+                for (NormalUser normalUser : normalUsers) {
+                    normalUser.deleteLikedSong(song);
+                }
+            }
+
+            allAlbums.remove(album);
+        }
+
+        albums.clear();
+        events.clear();
+        merch.clear();
+
+        return true;
     }
 }

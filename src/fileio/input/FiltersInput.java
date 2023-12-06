@@ -10,8 +10,9 @@ public final class FiltersInput {
     private String genre;
     private String releaseYear; // pentru search song/episode -> releaseYear
     private String artist;
-    private String owner; // pentru search playlist si podcast
+    private String owner; // pentru search playlist/podcast/album
     private String followers; // pentru search playlist -> followers
+    private String description; // pentru searc album -> description
 
     public FiltersInput() {
     }
@@ -19,7 +20,6 @@ public final class FiltersInput {
     public String getName() {
         return name;
     }
-
     public void setName(final String name) {
         this.name = name;
     }
@@ -27,7 +27,6 @@ public final class FiltersInput {
     public String getAlbum() {
         return album;
     }
-
     public void setAlbum(final String album) {
         this.album = album;
     }
@@ -35,7 +34,6 @@ public final class FiltersInput {
     public ArrayList<String> getTags() {
         return tags;
     }
-
     public void setTags(final ArrayList<String> tags) {
         this.tags = tags;
     }
@@ -43,7 +41,6 @@ public final class FiltersInput {
     public String getLyrics() {
         return lyrics;
     }
-
     public void setLyrics(final String lyrics) {
         this.lyrics = lyrics;
     }
@@ -51,7 +48,6 @@ public final class FiltersInput {
     public String getGenre() {
         return genre;
     }
-
     public void setGenre(final String genre) {
         this.genre = genre;
     }
@@ -59,7 +55,6 @@ public final class FiltersInput {
     public String getReleaseYear() {
         return releaseYear;
     }
-
     public void setReleaseYear(final String releaseYear) {
         this.releaseYear = releaseYear;
     }
@@ -67,7 +62,6 @@ public final class FiltersInput {
     public String getArtist() {
         return artist;
     }
-
     public void setArtist(final String artist) {
         this.artist = artist;
     }
@@ -75,7 +69,6 @@ public final class FiltersInput {
     public String getOwner() {
         return owner;
     }
-
     public void setOwner(final String owner) {
         this.owner = owner;
     }
@@ -83,9 +76,15 @@ public final class FiltersInput {
     public String getFollowers() {
         return followers;
     }
-
     public void setFollowers(final String followers) {
         this.followers = followers;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

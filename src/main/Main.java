@@ -70,7 +70,7 @@ public final class Main {
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String filePath3 = "test03_etapa2.json";
+        String filePath3 = "test04_etapa2.json";
         LibraryInput library = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
                                                                + "library/library.json"),
                                                                LibraryInput.class);
@@ -119,6 +119,8 @@ public final class Main {
                 case "printCurrentPage" -> outputs.add(CommandRunner.printCurrentPage(command));
                 case "addEvent" -> outputs.add(CommandRunner.addEvent(command));
                 case "addMerch" -> outputs.add(CommandRunner.addMerch(command));
+                case "getAllUsers" -> outputs.add(CommandRunner.getAllUsers(command));
+                case "deleteUser" -> outputs.add(CommandRunner.deleteUser(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

@@ -3,6 +3,7 @@ package app.searchBar;
 
 import app.Admin;
 import app.audio.LibraryEntry;
+import app.users.userTypes.Artist;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import static app.searchBar.FilterUtils.filterByOwner;
 import static app.searchBar.FilterUtils.filterByPlaylistVisibility;
 import static app.searchBar.FilterUtils.filterByReleaseYear;
 import static app.searchBar.FilterUtils.filterByTags;
+import static app.searchBar.FilterUtils.filterByDescription;
 
 /**
  * The type Search bar.
@@ -120,6 +122,21 @@ public final class SearchBar {
 
                 if (filters.getOwner() != null) {
                     entries = filterByOwner(entries, filters.getOwner());
+                }
+                break;
+            case "album":
+                entries = new ArrayList<>(Admin.getAlbums());
+
+                if (filters.getName() != null) {
+                    entries = filterByName(entries, filters.getName());
+                }
+
+                if (filters.getOwner() != null) {
+                    entries = filterByOwner(entries, filters.getOwner());
+                }
+
+                if (filters.getDescription() != null) {
+                    entries = filterByDescription(entries, filters.getDescription());
                 }
                 break;
             case "artist":

@@ -1,5 +1,6 @@
 package app.users.userTypes;
 
+import app.Admin;
 import app.audio.Collections.AudioCollection;
 import app.audio.Collections.Playlist;
 import app.audio.Collections.PlaylistOutput;
@@ -381,10 +382,47 @@ public class NormalUser extends User {
         return null;
     }
 
-
     public void simulateTime(int time) {
         if (connectionStatus == Enums.connectionStatus.ONLINE) {
             player.simulatePlayer(time);
         }
     }
+
+    public void deleteNormalUserData() {
+        List<User> users = Admin.getUsers();
+
+        // stergem pentru fiecare userNormal din followedPlaylists playlisturile userului
+        // pe care vrem sa il eliminam
+        for (User user : users) {
+            if (user.getType().equals("user")) {
+                for (Playlist playlist : this.getPlaylists()) {
+                    ((NormalUser)user).unfollowPlaylist(playlist);
+                }
+            }
+        }
+        this.playlists.clear();
+
+        for (Song song : this.likedSongs) {
+            song.dislike();
+        }
+        this.likedSongs.clear();
+
+        for (Playlist playlist : this.followedPlaylists) {
+            playlist.decreaseFollowers();
+        }
+        this.followedPlaylists.clear();
+    }
+
+    public void unfollowPlaylist(Playlist playlist) {
+        this.followedPlaylists.remove(playlist);
+    }
+
+    /**
+     * Delete the song from user Liked Songs
+     * @param song song to be deleted from everywhere
+     */
+    public void deleteLikedSong(Song song) {
+        this.likedSongs.remove(song);
+    }
+
 }

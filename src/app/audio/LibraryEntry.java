@@ -120,6 +120,16 @@ public abstract class LibraryEntry {
         return false;
     }
 
+    /**
+     * Matches album descriptions boolean.
+     *
+     * @param description the description of album
+     * @return the boolean
+     */
+    public boolean matchesDescriptions(final String description) {
+        return false;
+    }
+
     @Override
     public String toString() {
         return name;
