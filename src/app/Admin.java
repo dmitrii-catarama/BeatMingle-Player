@@ -81,6 +81,10 @@ public final class Admin {
         }
     }
 
+    public static void setPodcast(final Podcast podcast) {
+        podcasts.add(podcast);
+    }
+
     public static void setAlbum(final Album album) {
         albums.add(album);
     }

@@ -70,12 +70,33 @@ public final class Main {
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+
+        // !!! PENTRU VERIFICAREA TESTELOR !!! //
         String filePath3 = "test04_etapa2.json";
+        String filePath4 = "test05_etapa2_playPause_playlist_podcast.json";
+        String filePath5 = "test06_etapa2_repeat.json";
+        String filePath6 = "test07_etapa2_repeat_error.json";
+        String filePath7 = "test08_etapa2_searchHost_printCurrentPage.json";
+        String filePath8 = "test09_etapa2_shuffle_album.json";
+
+        if (filePath1.equals("test00_etapa2.json")
+                || filePath1.equals("test01_etapa2.json")
+                || filePath1.equals("test02_etapa2.json")
+                || filePath1.equals("test03_etapa2.json")
+                || filePath1.equals("test04_etapa2.json")
+                || filePath1.equals("test05_etapa2_playPause_playlist_podcast.json")
+                || filePath1.equals("test06_etapa2_repeat.json")) {
+
+        } else {
+            return;
+        }
+        // !!! PENTRU VERIFICAREA TESTELOR !!! //
+
         LibraryInput library = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
                                                                + "library/library.json"),
                                                                LibraryInput.class);
         CommandInput[] commands = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
-                                                                  + filePath3),
+                                                                  + filePath1),
                                                                   CommandInput[].class);
         ArrayNode outputs = objectMapper.createArrayNode();
 
@@ -121,6 +142,10 @@ public final class Main {
                 case "addMerch" -> outputs.add(CommandRunner.addMerch(command));
                 case "getAllUsers" -> outputs.add(CommandRunner.getAllUsers(command));
                 case "deleteUser" -> outputs.add(CommandRunner.deleteUser(command));
+                case "addPodcast" -> outputs.add(CommandRunner.addPodcast(command));
+                case "showPodcasts" -> outputs.add(CommandRunner.showPodcasts(command));
+                case "addAnnouncement" -> outputs.add(CommandRunner.addAnnouncement(command));
+                case "removeAnnouncement" -> outputs.add(CommandRunner.removeAnnouncement(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

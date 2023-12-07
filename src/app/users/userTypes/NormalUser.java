@@ -57,7 +57,6 @@ public class NormalUser extends User {
         this.homePage = homePage;
     }
 
-
     public ArrayList<String> search(Filters filters, String type) {
         searchBar.clearSelection();
         player.stop();
@@ -84,7 +83,8 @@ public class NormalUser extends User {
         if (selected == null)
             return "The selected ID is too high.";
 
-        if (searchBar.getLastSearchType().equals("artist")) {
+        if (searchBar.getLastSearchType().equals("artist")
+            || searchBar.getLastSearchType().equals("host")) {
             return "Successfully selected %s's page.".formatted(selected.getName());
         } else {
             return "Successfully selected %s.".formatted(selected.getName());
@@ -367,17 +367,16 @@ public class NormalUser extends User {
     }
 
     public String printCurrentPage() {
-        if (searchBar.getLastSearchType() == null) {
+        if (searchBar.getSelectedPageType() == null) {
             HomePage homePage = new HomePage();
             return homePage.printPage(this);
-        } else if (searchBar.getLastSearchType().equals("artist")) {
-            String artistName = searchBar.getLastSelected().toString();
+        } else if (searchBar.getSelectedPageType().equals("artist")) {
+            String artistName = searchBar.getSelectedUserPage().toString();
             return ArtistPage.printPage(artistName);
+        } else if (searchBar.getSelectedPageType().equals("host")) {
+            String hostName = searchBar.getSelectedUserPage().toString();
+            return HostPage.printPage(hostName);
         }
-//        } else if (searchBar.getLastSearchType().equals("host")) {
-//              String hostName = searchBar.getLastSelected().toString();
-//            return HostPage.printPage(hostName);
-//        }
 
         return null;
     }

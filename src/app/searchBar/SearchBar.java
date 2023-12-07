@@ -33,6 +33,10 @@ public final class SearchBar {
 
     @Getter
     private LibraryEntry lastSelected;
+    @Getter
+    private String selectedPageType;
+    @Getter
+    private LibraryEntry selectedUserPage;
 
     /**
      * Instantiates a new Search bar.
@@ -50,6 +54,14 @@ public final class SearchBar {
     public void clearSelection() {
         lastSelected = null;
         lastSearchType = null;
+    }
+
+    public void setSelectedPageType(String selectedPageType) {
+        this.selectedPageType = selectedPageType;
+    }
+
+    public void setSelectedUserPage(LibraryEntry selectedUserPage) {
+        this.selectedUserPage = selectedUserPage;
     }
 
     /**
@@ -179,7 +191,14 @@ public final class SearchBar {
             return null;
         } else {
             lastSelected =  this.results.get(itemNumber - 1);
+
+            if (lastSearchType.equals("artist") || lastSearchType.equals("host")) {
+                selectedPageType = lastSearchType;
+                selectedUserPage = lastSelected;
+            }
+
             results.clear();
+
 
             return lastSelected;
         }

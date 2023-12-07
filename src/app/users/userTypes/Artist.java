@@ -3,6 +3,7 @@ package app.users.userTypes;
 import app.Admin;
 import app.audio.Collections.Album;
 import app.audio.Collections.AlbumOutput;
+import app.audio.Collections.PodcastOutput;
 import app.audio.Collections.Utilities.forArtist.Event;
 import app.audio.Collections.Utilities.forArtist.Merch;
 import app.audio.Files.Song;

@@ -1,6 +1,5 @@
 package app.audio.Collections;
 
-
 import app.audio.Files.Song;
 
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public class AlbumOutput {
         return songs;
     }
 
-
     public static ArrayList<AlbumOutput> albumOutput(ArrayList<Album> albums) {
         ArrayList<AlbumOutput> albumOutput = new ArrayList<>();
 
@@ -37,5 +35,4 @@ public class AlbumOutput {
 
         return albumOutput;
     }
-
 }
