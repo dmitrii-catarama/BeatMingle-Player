@@ -208,9 +208,12 @@ public final class Admin {
 
         switch (user.getType()) {
             case "user" -> {
-                ((NormalUser)user).deleteNormalUserData();
-                users.remove(user);
-                return commandInput.getUsername() + " was successfully deleted.";
+                if (((NormalUser)user).deleteNormalUserData()) {
+                    users.remove(user);
+                    return commandInput.getUsername() + " was successfully deleted.";
+                } else {
+                    return commandInput.getUsername() + " can't be deleted.";
+                }
             }
             case "artist" -> {
                 if (((Artist)user).deleteArtistData()) {
@@ -294,6 +297,44 @@ public final class Admin {
         return topPlaylists;
     }
 
+    public static List<String> getTop5Albums() {
+        List<Album> sortedAlbums = new ArrayList<>(getAllAlbums());
+        sortedAlbums.sort(Comparator.comparingInt(Album::getLikes)
+                .reversed()
+                .thenComparing(Album::getName, Comparator.naturalOrder()));
+
+        List<String> topAlbums = new ArrayList<>();
+        int count = 0;
+        for (Album album : sortedAlbums) {
+            if (count >= LIMIT) {
+                break;
+            }
+            topAlbums.add(album.getName());
+            count++;
+        }
+        return topAlbums;
+    }
+
+    public static List<String> getTop5Artists() {
+        List<Artist> sortedArtists = getArtists();
+        sortedArtists.sort(Comparator.comparingInt(Artist::getArtistLikes)
+                .reversed()
+                .thenComparing(Artist::getUsername, Comparator.naturalOrder()));
+
+        List<String> topArtists = new ArrayList<>();
+        int count = 0;
+
+        for (Artist artist : sortedArtists) {
+            if (count >= LIMIT) {
+                break;
+            }
+
+            topArtists.add(artist.getUsername());
+            count++;
+        }
+
+        return topArtists;
+    }
 
     public static List<String> getOnlineUsers() {
         List<User> normalUsers = new ArrayList<>(users);

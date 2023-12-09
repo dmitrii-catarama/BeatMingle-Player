@@ -35,8 +35,8 @@ public class LikedContentPage extends BasePage {
         for (Song song : topLikedSongs) {
             songsPrint.append(song.getName()).append(" - ").append(song.getArtist());
 
-            if (!(topLikedSongs.indexOf(song) == topLikedSongs.size() - 1)) {
-                playlistPrint.append(",");
+            if (!(topLikedSongs.indexOf(song) >= topLikedSongs.size() - 1)) {
+                songsPrint.append(", ");
             }
         }
 
@@ -46,8 +46,8 @@ public class LikedContentPage extends BasePage {
         for (Playlist playlist : followedPlaylist) {
             playlistPrint.append(playlist.getName()).append(" - ").append(playlist.getOwner());
 
-            if (!(followedPlaylist.indexOf(playlist) == followedPlaylist.size() - 1)) {
-                playlistPrint.append(",");
+            if (!(followedPlaylist.indexOf(playlist) >= followedPlaylist.size() - 1)) {
+                playlistPrint.append(", ");
             }
         }
 

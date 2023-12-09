@@ -344,13 +344,7 @@ public final class CommandRunner {
     }
 
     public static ObjectNode switchConnectionStatus(CommandInput commandInput) {
-        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
-        String message;
-        if (normalUser == null) {
-            message = "The username " + commandInput.getUsername() + " doesn't exist.";
-        } else {
-            message = normalUser.switchUserConnectionStatus();
-        }
+        String message = NormalUser.switchUserConnectionStatus(commandInput);
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -687,6 +681,28 @@ public final class CommandRunner {
         objectNode.put("command", commandInput.getCommand());
         objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("result", objectMapper.valueToTree(playlists));
+
+        return objectNode;
+    }
+
+    public static ObjectNode getTop5Albums(final CommandInput commandInput) {
+        List<String> albums = Admin.getTop5Albums();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("result", objectMapper.valueToTree(albums));
+
+        return objectNode;
+    }
+
+    public static ObjectNode getTop5Artists(final CommandInput commandInput) {
+        List<String> artists = Admin.getTop5Artists();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("result", objectMapper.valueToTree(artists));
 
         return objectNode;
     }

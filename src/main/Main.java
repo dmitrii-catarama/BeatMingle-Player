@@ -77,26 +77,28 @@ public final class Main {
         String filePath5 = "test06_etapa2_repeat.json";
         String filePath6 = "test07_etapa2_repeat_error.json";
         String filePath7 = "test08_etapa2_searchHost_printCurrentPage.json";
-        String filePath8 = "test09_etapa2_shuffle_album.json";
+        String filePath8 = "test15_etapa2_complex.json";
 
-        if (filePath1.equals("test00_etapa2.json")
-                || filePath1.equals("test01_etapa2.json")
-                || filePath1.equals("test02_etapa2.json")
-                || filePath1.equals("test03_etapa2.json")
-                || filePath1.equals("test04_etapa2.json")
-                || filePath1.equals("test05_etapa2_playPause_playlist_podcast.json")
-                || filePath1.equals("test06_etapa2_repeat.json")
-                || filePath1.equals("test07_etapa2_repeat_error.json")
-                || filePath1.equals("test08_etapa2_searchHost_printCurrentPage.json")
-                || filePath1.equals("test09_etapa2_shuffle_album.json")
-                || filePath1.equals("test10_etapa2_next_prev_forward_backward.json")
-                || filePath1.equals("test11_etapa2_shuffle_error.json")
-                || filePath1.equals("test12_etapa2_next_prev_forward_backward_error.json")
-                || filePath1.equals("test13_statistics.json")) {
-
-        } else {
-            return;
-        }
+//        if (filePath1.equals("test00_etapa2.json")
+//                || filePath1.equals("test01_etapa2.json")
+//                || filePath1.equals("test02_etapa2.json")
+//                || filePath1.equals("test03_etapa2.json")
+//                || filePath1.equals("test04_etapa2.json")
+//                || filePath1.equals("test05_etapa2_playPause_playlist_podcast.json")
+//                || filePath1.equals("test06_etapa2_repeat.json")
+//                || filePath1.equals("test07_etapa2_repeat_error.json")
+//                || filePath1.equals("test08_etapa2_searchHost_printCurrentPage.json")
+//                || filePath1.equals("test09_etapa2_shuffle_album.json")
+//                || filePath1.equals("test10_etapa2_next_prev_forward_backward.json")
+//                || filePath1.equals("test11_etapa2_shuffle_error.json")
+//                || filePath1.equals("test12_etapa2_next_prev_forward_backward_error.json")
+//                || filePath1.equals("test13_statistics.json")
+//                || filePath1.equals("test14_etapa2_delete_cases.json")
+//                || filePath1.equals("test15_etapa2_complex.json")) {
+//
+//        } else {
+//            return;
+//        }
         // !!! PENTRU VERIFICAREA TESTELOR !!! //
 
         LibraryInput library = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
@@ -157,7 +159,8 @@ public final class Main {
                 case "changePage" -> outputs.add(CommandRunner.changePage(command));
                 case "removePodcast" -> outputs.add(CommandRunner.removePodcast(command));
                 case "removeEvent" -> outputs.add(CommandRunner.removeEvent(command));
-                //case "getTop5Albums" -> outputs.add(CommandRunner.getTop5Albums(command));
+                case "getTop5Albums" -> outputs.add(CommandRunner.getTop5Albums(command));
+                case "getTop5Artists" -> outputs.add(CommandRunner.getTop5Artists(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

@@ -205,4 +205,5 @@ public final class SearchBar {
             return lastSelected;
         }
     }
+
 }

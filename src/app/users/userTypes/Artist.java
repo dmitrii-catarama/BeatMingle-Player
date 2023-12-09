@@ -9,6 +9,7 @@ import app.audio.Collections.Utilities.forArtist.Event;
 import app.audio.Collections.Utilities.forArtist.Merch;
 import app.audio.Collections.Utilities.forHost.Announcement;
 import app.audio.Files.Song;
+import app.audio.LibraryEntry;
 import app.player.PlayerStats;
 import app.users.User;
 import app.utils.Enums;
@@ -273,11 +274,15 @@ public class Artist extends User {
                 continue;
             }
 
-            boolean lastSearched = normalUser.isLastSearched();
-            String lastSelected = normalUser.getSearchBar().getLastSelected().toString();
 
-            if (!lastSearched && lastSelected != null) {
-                if (this.getUsername().equals(lastSelected)) {
+
+            if (normalUser.getSearchBar().getSelectedUserPage() == null) {
+                continue;
+            }
+
+            String pageSet = normalUser.getSearchBar().getSelectedUserPage().toString();
+            if (normalUser.getSearchBar().getSelectedPageType() != null) {
+                if (this.getUsername().equals(pageSet)) {
                     return false;
                 }
             }
@@ -307,8 +312,6 @@ public class Artist extends User {
                     normalUser.deleteLikedSong(song);
                 }
             }
-
-            //allAlbums.remove(album);
         }
 
         albums.clear();
@@ -317,4 +320,16 @@ public class Artist extends User {
 
         return true;
     }
+
+    public Integer getArtistLikes() {
+        Integer likes = 0;
+
+        for (Album album : this.albums) {
+            likes += album.getLikes();
+        }
+
+        return likes;
+    }
+
+
 }

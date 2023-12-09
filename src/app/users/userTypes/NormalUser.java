@@ -4,6 +4,7 @@ import app.Admin;
 import app.audio.Collections.AudioCollection;
 import app.audio.Collections.Playlist;
 import app.audio.Collections.PlaylistOutput;
+import app.audio.Collections.Podcast;
 import app.audio.Files.AudioFile;
 import app.audio.Files.Song;
 import app.audio.LibraryEntry;
@@ -17,6 +18,7 @@ import app.searchBar.Filters;
 import app.searchBar.SearchBar;
 import app.users.User;
 import app.utils.Enums;
+import fileio.input.CommandInput;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -198,8 +200,11 @@ public class NormalUser extends User {
         if (player.getCurrentAudioFile() == null)
             return "Please load a source before liking or unliking.";
 
-        if (!player.getType().equals("song") && !player.getType().equals("playlist"))
+        if (!player.getType().equals("song") && !player.getType().equals("playlist")
+                && !player.getType().equals("album")) {
+
             return "Loaded source is not a song.";
+        }
 
         Song song = (Song) player.getCurrentAudioFile();
 
@@ -286,18 +291,26 @@ public class NormalUser extends User {
     }
 
 
-    public String switchUserConnectionStatus() {
-        if (super.getType().equals("artist") || super.getType().equals("host")) {
-            return getUsername() + " is not a normal user.";
+    public static String switchUserConnectionStatus(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+
+        if(user == null) {
+            return "The username " + commandInput.getUsername() + " doesn't exist.";
         }
 
-        if (connectionStatus == Enums.connectionStatus.ONLINE) {
-            connectionStatus = Enums.connectionStatus.OFFLINE;
+        if (user.getType().equals("artist") || user.getType().equals("host")) {
+            return user.getUsername() + " is not a normal user.";
+        }
+
+        NormalUser normalUser = (NormalUser)user;
+
+        if (normalUser.connectionStatus == Enums.connectionStatus.ONLINE) {
+            normalUser.connectionStatus = Enums.connectionStatus.OFFLINE;
         } else {
-            connectionStatus = Enums.connectionStatus.ONLINE;
+            normalUser.connectionStatus = Enums.connectionStatus.ONLINE;
         }
 
-        return getUsername() + " has changed status successfully.";
+        return normalUser.getUsername() + " has changed status successfully.";
     }
 
 
@@ -404,7 +417,10 @@ public class NormalUser extends User {
         if (!nextPage.equals("Home") && !nextPage.equals("LikedContent")) {
             return this.getUsername() + " is trying to access a non-existent page.";
         }
+
         changePage = nextPage;
+        searchBar.setSelectedUserPage(null);
+        searchBar.setSelectedPageType(null);
 
         return this.getUsername() + " accessed " + nextPage + " successfully.";
     }
@@ -415,18 +431,29 @@ public class NormalUser extends User {
         }
     }
 
-    public void deleteNormalUserData() {
-        List<User> users = Admin.getUsers();
+    public boolean deleteNormalUserData() {
+        List<NormalUser> normalUsers = Admin.getNormalUsers();
 
-        // stergem pentru fiecare userNormal din followedPlaylists playlisturile userului
-        // pe care vrem sa il eliminam
-        for (User user : users) {
-            if (user.getType().equals("user")) {
-                for (Playlist playlist : this.getPlaylists()) {
-                    ((NormalUser)user).unfollowPlaylist(playlist);
+        // veificam daca nici un user normal nu asculta playliste lui
+        // userul pe care vrem sa-l stergem
+        for (NormalUser normalUser : normalUsers) {
+            for (Playlist playlist : this.playlists) {
+                if (normalUser.getCurrentAudioCollectionName() != null
+                        && normalUser.getCurrentAudioCollectionName().equals(playlist.getName())) {
+
+                    return false;
                 }
             }
         }
+
+        // stergem pentru fiecare userNormal din followedPlaylists playlisturile userului
+        // pe care vrem sa il eliminam
+        for (NormalUser normalUser : normalUsers) {
+            for (Playlist playlist : this.getPlaylists()) {
+                normalUser.unfollowPlaylist(playlist);
+            }
+        }
+
         this.playlists.clear();
 
         for (Song song : this.likedSongs) {
@@ -438,6 +465,8 @@ public class NormalUser extends User {
             playlist.decreaseFollowers();
         }
         this.followedPlaylists.clear();
+
+        return true;
     }
 
     public void unfollowPlaylist(Playlist playlist) {

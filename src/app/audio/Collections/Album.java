@@ -63,4 +63,14 @@ public class Album extends AudioCollection{
         return songs.get(index);
     }
 
+    public Integer getLikes() {
+        Integer likes = 0;
+
+        for (Song song : songs) {
+            likes += song.getLikes();
+        }
+
+        return likes;
+    }
+
 }

@@ -183,7 +183,7 @@ public class Host extends User {
     public boolean deleteHostData() {
         List<NormalUser> normalUsers = Admin.getNormalUsers();
 
-        // verificare daca nici un user normal nu se afla pe pagina artistului
+        //verificare daca nici un user normal nu se afla pe pagina artistului
         for (NormalUser normalUser : normalUsers) {
             if (normalUser.getConnectionStatus().equals(Enums.connectionStatus.OFFLINE)) {
                 continue;
@@ -194,14 +194,18 @@ public class Host extends User {
                 continue;
             }
 
-            boolean lastSearched = normalUser.isLastSearched();
-            String lastSelected = normalUser.getSearchBar().getLastSelected().toString();
 
-            if (!lastSearched && lastSelected != null) {
-                if (this.getUsername().equals(lastSelected)) {
+            if (normalUser.getSearchBar().getSelectedUserPage() == null) {
+                continue;
+            }
+
+            String pageSet = normalUser.getSearchBar().getSelectedUserPage().toString();
+            if (normalUser.getSearchBar().getSelectedPageType() != null) {
+                if (this.getUsername().equals(pageSet)) {
                     return false;
                 }
             }
+
         }
 
         // Verificare daca nimeni din useri normali nu are incarcat podcastul
