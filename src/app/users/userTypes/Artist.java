@@ -3,9 +3,11 @@ package app.users.userTypes;
 import app.Admin;
 import app.audio.Collections.Album;
 import app.audio.Collections.AlbumOutput;
+import app.audio.Collections.Playlist;
 import app.audio.Collections.PodcastOutput;
 import app.audio.Collections.Utilities.forArtist.Event;
 import app.audio.Collections.Utilities.forArtist.Merch;
+import app.audio.Collections.Utilities.forHost.Announcement;
 import app.audio.Files.Song;
 import app.player.PlayerStats;
 import app.users.User;
@@ -89,11 +91,76 @@ public class Artist extends User {
         for (Song song : newAlbum.getSongs()) {
             Admin.setSong(song);
         }
-        Admin.setAlbum(newAlbum);
+        //Admin.setAlbum(newAlbum);
 
         return user.getUsername() + " has added new album successfully.";
     }
 
+    public static String removeAlbum(CommandInput commandInput, User user) {
+        String nameAlbum = commandInput.getName();
+
+        if (user == null) {
+            return "The username " + commandInput.getUsername() + " doesn't exist.";
+        } else if (!user.getType().equals("artist")) {
+            return user.getUsername() + " is not an artist.";
+        } else if (!artistHasAlbum(((Artist)user).getAlbums(), nameAlbum)) {
+            return user.getUsername() + " doesn't have an album with the given name.";
+        }
+
+        List<NormalUser> normalUsers = Admin.getNormalUsers();
+        Artist artist = (Artist) user;
+        List<Playlist> playlists = Admin.getPlaylists();
+        Album albumToDelete = new Album(null);
+
+        for (Album album : artist.getAlbums()) {
+            if (album.getName().equals(nameAlbum)) {
+                albumToDelete = album;
+                break;
+            }
+        }
+
+        if (albumToDelete.getName() == null) {
+            return "Album nu a fost gasit din cauza unei erori";
+        }
+
+        // verificare daca unul din playlisturi contine cantecul din album
+        for (Playlist playlist : playlists) {
+            for (Song song : albumToDelete.getSongs()) {
+                if (playlist.getSongs().contains(song)) {
+                    return user.getUsername() + " can't delete this album.";
+                }
+            }
+        }
+
+        // verificare daca la player nu canta audio colectia de album
+        for (NormalUser normalUser : normalUsers) {
+            if (normalUser.getCurrentAudioCollectionName() != null
+                && normalUser.getCurrentAudioCollectionName().equals(albumToDelete.getName())) {
+
+                return user.getUsername() + " can't delete this album.";
+            }
+
+            // verificare daca in player canta un song din album
+            for (Song song : albumToDelete.getSongs()) {
+                if (normalUser.getCurrentAudioFileName() != null
+                    && normalUser.getCurrentAudioFileName().equals(song.getName())) {
+
+                    return user.getUsername() + " can't delete this album.";
+                }
+            }
+        }
+
+        List<Song> allSongs = Admin.getAdminSongs();
+
+        for (Song song : albumToDelete.getSongs()) {
+            allSongs.remove(song);
+        }
+
+        //Admin.getAdminAlbums().remove(albumToDelete);
+        artist.albums.remove(albumToDelete);
+
+        return artist.getUsername() + " deleted the album successfully.";
+    }
 
     public static ArrayList<AlbumOutput> showAlbums(User user) {
         Artist artist = (Artist)user;
@@ -141,6 +208,32 @@ public class Artist extends User {
         return artist.getUsername() + " has added new event successfully.";
     }
 
+    public static String removeEvent(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+
+        if (user == null) {
+            return "The username " + commandInput.getUsername() + " doesn't exist.";
+        } else if (!user.getType().equals("artist")) {
+            return commandInput.getUsername() + " is not an artist.";
+        }
+
+        Artist artist = (Artist)user ;
+        String eventDelete = commandInput.getName();
+
+//        if (artist.getEvents().stream().noneMatch(event -> eventDelete.equals(event.getName()))) {
+//            return artist.getUsername() + " doesn't have an event with the given name.";
+//        }
+
+        for (Event event : artist.getEvents()) {
+            if (event.getName().equals(eventDelete)) {
+                artist.getEvents().remove(event);
+                return artist.getUsername() + " deleted the event successfully.";
+            }
+        }
+
+        return artist.getUsername() + " doesn't have an event with the given name.";
+    }
+
     public static String addMerch(CommandInput commandInput, User user) {
         if (user == null) {
             return "The username " + commandInput.getUsername() + " doesn't exist.";
@@ -164,16 +257,9 @@ public class Artist extends User {
     }
 
     public boolean deleteArtistData() {
-        List<User> users = Admin.getUsers();
-        List<Album> allAlbums = Admin.getAdminAlbums();
+        //List<Album> allAlbums = Admin.getAdminAlbums();
         List<Song> allSongs = Admin.getAdminSongs();
-        List<NormalUser> normalUsers = new ArrayList<>();
-
-        for (User user : users) {
-            if (user.getType().equals("user")) {
-                normalUsers.add((NormalUser)user);
-            }
-        }
+        List<NormalUser> normalUsers = Admin.getNormalUsers();
 
         // verificare daca nici un user normal nu se afla pe pagina artistului si daca nu se
         // asculta un cantec din albumurile acestuia
@@ -205,7 +291,7 @@ public class Artist extends User {
                 continue;
             }
 
-            for (Album album : this.getAlbums()) {
+            for (Album album : this.albums) {
                 for (Song song : album.getSongs()) {
                     if (song.getName().equals(songInPlayer)) {
                         return false;
@@ -214,7 +300,7 @@ public class Artist extends User {
             }
         }
 
-        for (Album album : this.getAlbums()) {
+        for (Album album : this.albums) {
             for (Song song : album.getSongs()) {
                 allSongs.remove(song);
                 for (NormalUser normalUser : normalUsers) {
@@ -222,7 +308,7 @@ public class Artist extends User {
                 }
             }
 
-            allAlbums.remove(album);
+            //allAlbums.remove(album);
         }
 
         albums.clear();

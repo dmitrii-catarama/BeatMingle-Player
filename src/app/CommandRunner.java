@@ -478,6 +478,19 @@ public final class CommandRunner {
         return objectNode;
     }
 
+    public static ObjectNode removeAlbum(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        String message = Artist.removeAlbum(commandInput, user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
     public static ObjectNode showAlbums(CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
         ArrayList<AlbumOutput> albumsOutput = Artist.showAlbums(user);
@@ -494,6 +507,18 @@ public final class CommandRunner {
     public static ObjectNode addPodcast(CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
         String message = Host.addPodcast(commandInput, user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+    public static ObjectNode removePodcast(CommandInput commandInput) {
+        String message = Host.removePodcast(commandInput);
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
@@ -533,9 +558,37 @@ public final class CommandRunner {
         return objectNode;
     }
 
+    public static ObjectNode changePage(CommandInput commandInput) {
+        NormalUser normalUser = (NormalUser)Admin.getUser(commandInput.getUsername());
+        if (normalUser.getConnectionStatus() == Enums.connectionStatus.OFFLINE) {
+            return userOffline(commandInput);
+        }
+        String message = normalUser.changePage(commandInput.getNextPage());
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
     public static ObjectNode addEvent(CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
         String message = Artist.addEvent(commandInput, user);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
+        return objectNode;
+    }
+
+    public static ObjectNode removeEvent(CommandInput commandInput) {
+        String message = Artist.removeEvent(commandInput);
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());

@@ -40,6 +40,8 @@ public class NormalUser extends User {
     private HomePage homePage;
     @Getter
     private LikedContentPage likedContentPage;
+    @Getter
+    private String changePage;
 
     public NormalUser(String username, int age, String city) {
         super(username, age, city);
@@ -51,10 +53,19 @@ public class NormalUser extends User {
         searchBar = new SearchBar(username);
         lastSearched = false;
         connectionStatus = Enums.connectionStatus.ONLINE;
+        changePage = "Home";
     }
 
     public void setHomePage(HomePage homePage) {
         this.homePage = homePage;
+    }
+
+    public void setLikedContentPage(LikedContentPage likedContentPage) {
+        this.likedContentPage = likedContentPage;
+    }
+
+    public void setChangePage(String changePage) {
+        this.changePage = changePage;
     }
 
     public ArrayList<String> search(Filters filters, String type) {
@@ -71,7 +82,6 @@ public class NormalUser extends User {
         return results;
     }
 
-
     public String select(int itemNumber) {
         if (!lastSearched)
             return "Please conduct a search before making a selection.";
@@ -85,6 +95,8 @@ public class NormalUser extends User {
 
         if (searchBar.getLastSearchType().equals("artist")
             || searchBar.getLastSearchType().equals("host")) {
+
+            changePage = null;
             return "Successfully selected %s's page.".formatted(selected.getName());
         } else {
             return "Successfully selected %s.".formatted(selected.getName());
@@ -145,8 +157,8 @@ public class NormalUser extends User {
         if (player.getCurrentAudioFile() == null)
             return "Please load a source before using the shuffle function.";
 
-        if (!player.getType().equals("playlist"))
-            return "The loaded source is not a playlist.";
+        if (!(player.getType().equals("playlist") || player.getType().equals("album")))
+            return "The loaded source is not a playlist or an album.";
 
         player.shuffle(seed);
 
@@ -366,10 +378,17 @@ public class NormalUser extends User {
         return "This user's preferred genre is %s.".formatted(preferredGenre);
     }
 
+//    if (searchBar.getSelectedPageType() == null) {
+//        HomePage homePage = new HomePage();
+//        return homePage.printPage(this);
+//    }
     public String printCurrentPage() {
-        if (searchBar.getSelectedPageType() == null) {
+        if (changePage != null && changePage.equals("Home")) {
             HomePage homePage = new HomePage();
             return homePage.printPage(this);
+        } else if (changePage != null && changePage.equals("LikedContent")) {
+            LikedContentPage likedContentPage = new LikedContentPage();
+            return likedContentPage.printPage(this);
         } else if (searchBar.getSelectedPageType().equals("artist")) {
             String artistName = searchBar.getSelectedUserPage().toString();
             return ArtistPage.printPage(artistName);
@@ -379,6 +398,15 @@ public class NormalUser extends User {
         }
 
         return null;
+    }
+
+    public String changePage(String nextPage) {
+        if (!nextPage.equals("Home") && !nextPage.equals("LikedContent")) {
+            return this.getUsername() + " is trying to access a non-existent page.";
+        }
+        changePage = nextPage;
+
+        return this.getUsername() + " accessed " + nextPage + " successfully.";
     }
 
     public void simulateTime(int time) {
@@ -418,10 +446,25 @@ public class NormalUser extends User {
 
     /**
      * Delete the song from user Liked Songs
-     * @param song song to be deleted from everywhere
+     * @param song song to be deleted from Liked Songs
      */
     public void deleteLikedSong(Song song) {
         this.likedSongs.remove(song);
+    }
+
+    public String getCurrentAudioFileName() {
+        if (player.getCurrentAudioFile() != null) {
+            return player.getCurrentAudioFile().getName();
+        }
+        return null;
+
+    }
+
+    public String getCurrentAudioCollectionName() {
+        if (player.getCurrentAudioCollection() != null) {
+            return player.getCurrentAudioCollection().getName();
+        }
+        return null;
     }
 
 }

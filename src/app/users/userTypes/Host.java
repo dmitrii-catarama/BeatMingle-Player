@@ -6,11 +6,13 @@ import app.audio.Collections.Podcast;
 import app.audio.Collections.Utilities.forHost.Announcement;
 import app.audio.Files.Episode;
 import app.users.User;
+import app.utils.Enums;
 import fileio.input.CommandInput;
 import fileio.input.EpisodeInput;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Host extends User {
@@ -84,6 +86,44 @@ public class Host extends User {
         return user.getUsername() + " has added new podcast successfully.";
     }
 
+    public static String removePodcast(CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+
+        if (user == null) {
+            return "The username " + commandInput.getUsername() + " doesn't exist.";
+        } else if (!user.getType().equals("host")) {
+            return user.getUsername() + " is not a host.";
+        } else if (!((Host)user).hostHasPodcast(commandInput.getName())) {
+            return user.getUsername() + " doesn't have a podcast with the given name.";
+        }
+
+        List<NormalUser> normalUsers = Admin.getNormalUsers();
+        Host host = (Host) user;
+        Podcast podcastToDelete = new Podcast();
+
+        for (Podcast podcast : host.getPodcasts()) {
+            if (podcast.getName().equals(commandInput.getName())) {
+                podcastToDelete = podcast;
+                break;
+            }
+        }
+
+        // Verificare daca nimeni din useri normali nu are incarcat podcastul
+        for (NormalUser normalUser : normalUsers) {
+            if (normalUser.getCurrentAudioCollectionName() != null
+                && normalUser.getCurrentAudioCollectionName().equals(podcastToDelete.getName())) {
+
+                return user.getUsername() + " can't delete this podcast.";
+            }
+        }
+
+        Admin.getAdminPodcasts().remove(podcastToDelete);
+        host.podcasts.remove(podcastToDelete);
+
+        return host.getUsername() + " deleted the podcast successfully.";
+
+    }
+
     public static ArrayList<PodcastOutput> showPodcasts(User user) {
         Host host = (Host)user;
 
@@ -125,18 +165,64 @@ public class Host extends User {
         Host host = (Host)user;
         String announcementName = commandInput.getName();
 
-        if (host.getAnnouncements().stream().noneMatch
-                (announcement -> announcementName.equals(announcement.getName()))) {
-            return host.getUsername() + " has no announcement with the given name.";
-        }
+//        if (host.getAnnouncements().stream().noneMatch
+//                (announcement -> announcementName.equals(announcement.getName()))) {
+//            return host.getUsername() + " has no announcement with the given name.";
+//        }
 
         for (Announcement announcement : host.getAnnouncements()) {
             if (announcement.getName().equals(announcementName)) {
                 host.getAnnouncements().remove(announcement);
+                return host.getUsername() + " has successfully deleted the announcement.";
             }
         }
 
-        return host.getUsername() + " has successfully deleted the announcement.";
+        return host.getUsername() + " has no announcement with the given name.";
+    }
+
+    public boolean deleteHostData() {
+        List<NormalUser> normalUsers = Admin.getNormalUsers();
+
+        // verificare daca nici un user normal nu se afla pe pagina artistului
+        for (NormalUser normalUser : normalUsers) {
+            if (normalUser.getConnectionStatus().equals(Enums.connectionStatus.OFFLINE)) {
+                continue;
+            }
+
+            String lastSearchType = normalUser.getSearchBar().getLastSearchType();
+            if (lastSearchType == null || !lastSearchType.equals("host")) {
+                continue;
+            }
+
+            boolean lastSearched = normalUser.isLastSearched();
+            String lastSelected = normalUser.getSearchBar().getLastSelected().toString();
+
+            if (!lastSearched && lastSelected != null) {
+                if (this.getUsername().equals(lastSelected)) {
+                    return false;
+                }
+            }
+        }
+
+        // Verificare daca nimeni din useri normali nu are incarcat podcastul
+        for (NormalUser normalUser : normalUsers) {
+            for (Podcast podcast : this.podcasts) {
+                if (normalUser.getCurrentAudioCollectionName() != null
+                        && normalUser.getCurrentAudioCollectionName().equals(podcast.getName())) {
+
+                    return false;
+                }
+            }
+        }
+
+        for (Podcast podcast : this.podcasts) {
+            Admin.getAdminPodcasts().remove(podcast);
+        }
+
+        podcasts.clear();
+        announcements.clear();
+
+        return true;
     }
 
     public boolean hostHasPodcast(String podcastName) {

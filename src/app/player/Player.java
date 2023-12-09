@@ -127,7 +127,9 @@ public final class Player {
             source.generateShuffleOrder(seed);
         }
 
-        if (source.getType() == Enums.PlayerSourceType.PLAYLIST) {
+        if (source.getType() == Enums.PlayerSourceType.PLAYLIST
+            || source.getType() == Enums.PlayerSourceType.ALBUM) {
+
             shuffle = !shuffle;
             if (shuffle) {
                 source.updateShuffleIndex();
@@ -238,6 +240,18 @@ public final class Player {
             return null;
         }
         return source.getAudioFile();
+    }
+
+    /**
+     * Gets current audio collection.
+     *
+     * @return the current audio collection
+     */
+    public AudioCollection getCurrentAudioCollection() {
+        if (source == null) {
+            return null;
+        }
+        return source.getAudioCollection();
     }
 
     /**

@@ -7,6 +7,7 @@ import app.audio.Files.Episode;
 import app.audio.Files.Song;
 import app.users.User;
 import app.users.userTypes.Artist;
+import app.users.userTypes.Host;
 import app.users.userTypes.NormalUser;
 import app.utils.Enums;
 import fileio.input.*;
@@ -22,7 +23,7 @@ public final class Admin {
     private static List<User> users = new ArrayList<>();
     private static List<Song> songs = new ArrayList<>();
     private static List<Podcast> podcasts = new ArrayList<>();
-    private static List<Album> albums = new ArrayList<>();
+    //private static List<Album> albums = new ArrayList<>();
     private static int timestamp = 0;
     private static final int LIMIT = 5;
 
@@ -85,9 +86,9 @@ public final class Admin {
         podcasts.add(podcast);
     }
 
-    public static void setAlbum(final Album album) {
-        albums.add(album);
-    }
+//    public static void setAlbum(final Album album) {
+//        albums.add(album);
+//    }
 
     /**
      * Gets users.
@@ -96,54 +97,6 @@ public final class Admin {
      */
     public static List<User> getUsers() {
         return new ArrayList<>(users);
-    }
-    public static List<Song> getAdminSongs() {
-        return songs;
-    }
-
-    public static List<Album> getAdminAlbums() {
-        return albums;
-    }
-    /**
-     * Gets songs.
-     *
-     * @return the songs
-     */
-    public static List<Song> getSongs() {
-        return new ArrayList<>(songs);
-    }
-
-    /**
-     * Gets podcasts.
-     *
-     * @return the podcasts
-     */
-    public static List<Podcast> getPodcasts() {
-        return new ArrayList<>(podcasts);
-    }
-
-    /**
-     * Gets albums.
-     *
-     * @return the albums
-     */
-    public static List<Album> getAlbums() {
-        return new ArrayList<>(albums);
-    }
-
-    /**
-     * Gets playlists.
-     *
-     * @return the playlists
-     */
-    public static List<Playlist> getPlaylists() {
-        List<Playlist> playlists = new ArrayList<>();
-        for (User user : users) {
-            if (user.getType().equals("user")) {
-                playlists.addAll(((NormalUser)user).getPlaylists());
-            }
-        }
-        return playlists;
     }
 
     /**
@@ -161,6 +114,90 @@ public final class Admin {
         return null;
     }
 
+    public static List<NormalUser> getNormalUsers() {
+        List<NormalUser> normalUsers = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getType().equals("user")) {
+                normalUsers.add((NormalUser) user);
+            }
+        }
+
+        return normalUsers;
+    }
+
+    public static List<Artist> getArtists() {
+        List<Artist> artists = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getType().equals("artist")) {
+                artists.add((Artist) user);
+            }
+        }
+
+        return artists;
+    }
+
+    public static List<Song> getAdminSongs() {
+        return songs;
+    }
+//    public static List<Album> getAdminAlbums() {
+//        return albums;
+//    }
+    /**
+     * Gets songs.
+     *
+     * @return the songs
+     */
+    public static List<Song> getSongs() {
+        return new ArrayList<>(songs);
+    }
+
+    /**
+     * Gets podcasts.
+     *
+     * @return the podcasts
+     */
+    public static List<Podcast> getPodcasts() {
+        return new ArrayList<>(podcasts);
+    }
+    public static List<Podcast> getAdminPodcasts() {
+        return podcasts;
+    }
+
+    /**
+     * Gets albums.
+     *
+     * @return the albums
+     */
+//    public static List<Album> getAlbums() {
+//        return new ArrayList<>(albums);
+//    }
+
+    /**
+     * Gets playlists.
+     *
+     * @return the playlists
+     */
+    public static List<Playlist> getPlaylists() {
+        List<Playlist> playlists = new ArrayList<>();
+        for (User user : users) {
+            if (user.getType().equals("user")) {
+                playlists.addAll(((NormalUser)user).getPlaylists());
+            }
+        }
+        return playlists;
+    }
+
+    public static List<Album> getAllAlbums() {
+        List<Album> albums = new ArrayList<>();
+        for (User user : users) {
+            if (user.getType().equals("artist")) {
+                albums.addAll(((Artist)user).getAlbums());
+            }
+        }
+        return albums;
+    }
 
     public static String deleteUser(CommandInput commandInput) {
         User user = getUser(commandInput.getUsername());
@@ -183,9 +220,17 @@ public final class Admin {
                     return commandInput.getUsername() + " can't be deleted.";
                 }
             }
+            case "host" -> {
+                if (((Host)user).deleteHostData()) {
+                    users.remove(user);
+                    return commandInput.getUsername() + " was successfully deleted.";
+                } else {
+                    return commandInput.getUsername() + " can't be deleted.";
+                }
+            }
         }
 
-        return "YOU WANT TO REMOVE HOST???";
+        return "The command is not satisfying the user type requirements.";
     }
 
     /**
@@ -248,6 +293,7 @@ public final class Admin {
         }
         return topPlaylists;
     }
+
 
     public static List<String> getOnlineUsers() {
         List<User> normalUsers = new ArrayList<>(users);

@@ -2,7 +2,9 @@ package app.searchBar;
 
 
 import app.Admin;
+import app.audio.Collections.Album;
 import app.audio.LibraryEntry;
+import app.users.User;
 import app.users.userTypes.Artist;
 import lombok.Getter;
 
@@ -137,7 +139,7 @@ public final class SearchBar {
                 }
                 break;
             case "album":
-                entries = new ArrayList<>(Admin.getAlbums());
+                entries = new ArrayList<>(Admin.getAllAlbums());
 
                 if (filters.getName() != null) {
                     entries = filterByName(entries, filters.getName());

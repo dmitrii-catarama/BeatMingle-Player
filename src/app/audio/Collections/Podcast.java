@@ -7,6 +7,12 @@ import java.util.List;
 public final class Podcast extends AudioCollection {
     private final List<Episode> episodes;
 
+
+    public Podcast() {
+        super(null, null);
+        this.episodes = null;
+    }
+
     public Podcast(final String name, final String owner, final List<Episode> episodes) {
         super(name, owner);
         this.episodes = episodes;
