@@ -101,17 +101,18 @@ public final class Main {
 //        }
         // !!! PENTRU VERIFICAREA TESTELOR !!! //
 
-        LibraryInput library = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
-                                                               + "library/library.json"),
-                                                               LibraryInput.class);
         CommandInput[] commands = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
                                                                   + filePath1),
                                                                   CommandInput[].class);
         ArrayNode outputs = objectMapper.createArrayNode();
 
-        Admin.setUsers(library.getUsers());
-        Admin.setSongs(library.getSongs());
-        Admin.setPodcasts(library.getPodcasts());
+        LibraryInput library = LibraryInput.getInstance();
+        Admin admin = Admin.getInstance();
+
+        admin.setUsers(library.getUsers());
+        admin.setSongs(library.getSongs());
+        admin.setPodcasts(library.getPodcasts());
+        //Admin.setUsers(LibraryInput.getInstance().getUsers());
 
         for (CommandInput command : commands) {
             Admin.updateTimestamp(command.getTimestamp());
@@ -141,7 +142,8 @@ public final class Main {
                 case "getPreferredGenre" -> outputs.add(CommandRunner.getPreferredGenre(command));
                 case "getTop5Songs" -> outputs.add(CommandRunner.getTop5Songs(command));
                 case "getTop5Playlists" -> outputs.add(CommandRunner.getTop5Playlists(command));
-                case "switchConnectionStatus" -> outputs.add(CommandRunner.switchConnectionStatus(command));
+                case "switchConnectionStatus" ->
+                        outputs.add(CommandRunner.switchConnectionStatus(command));
                 case "getOnlineUsers" -> outputs.add(CommandRunner.getOnlineUsers(command));
                 case "addUser" -> outputs.add(CommandRunner.addUser(command));
                 case "addAlbum" -> outputs.add(CommandRunner.addAlbum(command));
@@ -154,7 +156,8 @@ public final class Main {
                 case "addPodcast" -> outputs.add(CommandRunner.addPodcast(command));
                 case "showPodcasts" -> outputs.add(CommandRunner.showPodcasts(command));
                 case "addAnnouncement" -> outputs.add(CommandRunner.addAnnouncement(command));
-                case "removeAnnouncement" -> outputs.add(CommandRunner.removeAnnouncement(command));
+                case "removeAnnouncement" ->
+                        outputs.add(CommandRunner.removeAnnouncement(command));
                 case "removeAlbum" -> outputs.add(CommandRunner.removeAlbum(command));
                 case "changePage" -> outputs.add(CommandRunner.changePage(command));
                 case "removePodcast" -> outputs.add(CommandRunner.removePodcast(command));

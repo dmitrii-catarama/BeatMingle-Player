@@ -1,13 +1,33 @@
 package fileio.input;
 
+import checker.CheckerConstants;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+
 public final class LibraryInput {
+    private static LibraryInput instance = null;
     private ArrayList<SongInput> songs;
     private ArrayList<PodcastInput> podcasts;
     private ArrayList<UserInput> users;
 
-    public LibraryInput() {
+    // Singleton lazy instantiation
+    private LibraryInput() {
+    }
+
+
+    public static LibraryInput getInstance() throws IOException {
+        if (instance == null) {
+            ObjectMapper instanceMapper = new ObjectMapper();
+
+            instance = instanceMapper.readValue(new File(CheckerConstants.TESTS_PATH
+                            + "library/library.json"),
+                    LibraryInput.class);;
+        }
+        return instance;
     }
 
     public ArrayList<SongInput> getSongs() {
