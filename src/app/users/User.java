@@ -17,18 +17,27 @@ public class User {
     @Getter
     private String type;
 
-    public User(String username, int age, String city) {
+    public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;
         this.city = city;
         type = "user";
     }
 
-    public void setType(String type) {
+    /**
+     * Sets the type of the user.
+     * @param type the user type
+     */
+    public void setType(final String type) {
         this.type = type;
     }
 
-    public static String addUser(CommandInput commandInput) {
+    /**
+     * Add a new user command.
+     * @param commandInput the command input
+     * @return the message of the command
+     */
+    public static String addUser(final CommandInput commandInput) {
         String newUserName = commandInput.getUsername();
         User newUser = Admin.getUser(newUserName);
 
@@ -37,11 +46,18 @@ public class User {
         }
 
         String newUserType = commandInput.getType();
-        switch(newUserType) {
-            case "user" -> newUser = new NormalUser(newUserName, commandInput.getAge(), commandInput.getCity());
-            case "artist" -> newUser = new Artist(newUserName, commandInput.getAge(), commandInput.getCity());
-            case "host" -> newUser = new Host(newUserName, commandInput.getAge(), commandInput.getCity());
-            default -> System.out.println("not a valid type of new user");
+        switch (newUserType) {
+            case "user":
+                newUser = new
+                        NormalUser(newUserName, commandInput.getAge(), commandInput.getCity());
+                break;
+            case "artist":
+                newUser = new Artist(newUserName, commandInput.getAge(), commandInput.getCity());
+                break;
+            case "host":
+                newUser = new Host(newUserName, commandInput.getAge(), commandInput.getCity());
+                break;
+            default: System.out.println("not a valid type of new user");
         }
 
         Admin.setUser(newUser);

@@ -157,8 +157,8 @@
   "timestamp" : 480,
   "message" : "Repeat mode changed to repeat once."
 }, {
-  "user" : "bob35",
   "command" : "printCurrentPage",
+  "user" : "bob35",
   "timestamp" : 525,
   "message" : "Liked songs:\n\t[Aurora Harmony]\n\nFollowed playlists:\n\t[Playlist bengos]"
 }, {
@@ -215,8 +215,8 @@
   "timestamp" : 930,
   "message" : "audiosage can't be deleted."
 }, {
-  "user" : "soundseeker21",
   "command" : "changePage",
+  "user" : "soundseeker21",
   "timestamp" : 955,
   "message" : "soundseeker21 accessed Home successfully."
 }, {
@@ -285,8 +285,8 @@
   "timestamp" : 7860,
   "message" : "sonicpainter can't be deleted."
 }, {
-  "user" : "david27",
   "command" : "changePage",
+  "user" : "david27",
   "timestamp" : 7885,
   "message" : "david27 accessed Home successfully."
 }, {
@@ -295,8 +295,8 @@
   "timestamp" : 7890,
   "message" : "sonicpainter was successfully deleted."
 }, {
-  "user" : "bob35",
   "command" : "printCurrentPage",
+  "user" : "bob35",
   "timestamp" : 7900,
   "message" : "Liked songs:\n\t[]\n\nFollowed playlists:\n\t[]"
 } ]

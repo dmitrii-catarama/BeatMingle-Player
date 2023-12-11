@@ -9,23 +9,36 @@ public class PodcastOutput {
     private String name;
     private ArrayList<String> episodes;
 
-    public PodcastOutput(String name, ArrayList<String> episodesName) {
+    public PodcastOutput(final String name, final ArrayList<String> episodesName) {
         this.name = name;
         this.episodes = episodesName;
     }
 
+    /**
+     * Gets name of the podcast.
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets episodes names of the podcast.
+     * @return array list of episodes names
+     */
     public ArrayList<String> getEpisodes() {
         return episodes;
     }
 
-    public static ArrayList<PodcastOutput> podcastOutput(ArrayList<Podcast> podcasts) {
+    /**
+     * Transform podcasts to the output format.
+     * @param podcasts podcasts
+     * @return array list of podcast output
+     */
+    public static ArrayList<PodcastOutput> podcastOutput(final ArrayList<Podcast> podcasts) {
         ArrayList<PodcastOutput> podcastOutput = new ArrayList<>();
 
-        for(Podcast podcast : podcasts) {
+        for (Podcast podcast : podcasts) {
             ArrayList<String> episodesName = new ArrayList<>();
 
             for (Episode episode : podcast.getEpisodes()) {

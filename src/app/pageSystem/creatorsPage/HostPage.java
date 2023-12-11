@@ -6,13 +6,19 @@ import app.audio.Collections.Utilities.forHost.Announcement;
 import app.audio.Files.Episode;
 import app.users.userTypes.Host;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class HostPage {
+public final class HostPage {
 
-    public static String printPage(String artistName) {
-        Host host = (Host)Admin.getUser(artistName);
+    private HostPage() {
+    }
+
+    /**
+     * print host page
+     * @param artistName name of host to be printed
+     * @return content that should pe printed in a string
+     */
+    public static String printPage(final String artistName) {
+        Host host = (Host) Admin.getUser(artistName);
         StringBuilder printPodcasts = new StringBuilder();
         StringBuilder printEpisode = new StringBuilder();
         StringBuilder printAnnouncement = new StringBuilder();
@@ -26,8 +32,8 @@ public class HostPage {
                 printEpisode.append(episode.getName()).append(" - ").
                         append(episode.getDescription());
 
-                if (!(podcast.getEpisodes().indexOf(episode) ==
-                        podcast.getEpisodes().size() - 1)) {
+                if (!(podcast.getEpisodes().indexOf(episode)
+                        == podcast.getEpisodes().size() - 1)) {
 
                     printEpisode.append(", ");
                 }
@@ -49,8 +55,8 @@ public class HostPage {
             printAnnouncement.append(announcement.getName()).append(":\n\t")
                     .append(announcement.getDescription());
 
-            if(!(host.getAnnouncements().indexOf(announcement) ==
-                    host.getAnnouncements().size() - 1)) {
+            if (!(host.getAnnouncements().indexOf(announcement)
+                    == host.getAnnouncements().size() - 1)) {
 
                 printAnnouncement.append(", ");
             }

@@ -3,23 +3,20 @@ package app.pageSystem.userPages;
 import app.audio.Collections.Playlist;
 import app.audio.Files.Song;
 import app.pageSystem.BasePage;
-import app.users.User;
 import app.users.userTypes.NormalUser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HomePage extends BasePage {
     @Getter
     private ArrayList<String> topLikedSongs;
     @Getter
     private ArrayList<String> topFollowedPlaylists;
+    private static final int LIMIT = 5;
 
 
     public HomePage() {
@@ -27,22 +24,28 @@ public class HomePage extends BasePage {
         this.topFollowedPlaylists = null;
     }
 
-    public HomePage(ArrayList<Song> likedSongs, ArrayList<Playlist> playlists,
-                    ArrayList<String> topLikedSongs, ArrayList<String> topFollowedPlaylists) {
+    public HomePage(final ArrayList<Song> likedSongs, final ArrayList<Playlist> playlists,
+                    final ArrayList<String> topLikedSongs,
+                    final ArrayList<String> topFollowedPlaylists) {
 
         super(likedSongs, playlists);
         this.topLikedSongs = topLikedSongs;
         this.topFollowedPlaylists = topFollowedPlaylists;
     }
 
-    public static ArrayList<String> setTopLikedSongs(ArrayList<Song> songs) {
+    /**
+     * get topLikedSongs
+     * @param songs all user liked songs
+     * @return topLikedSongs list
+     */
+    public static ArrayList<String> setTopLikedSongs(final ArrayList<Song> songs) {
         ArrayList<String> songsName = new ArrayList<>();
         List<Song> sortedSongs = new ArrayList<>(songs);
         sortedSongs.sort(Comparator.comparingInt(Song::getLikes).reversed());
         for (Song song : sortedSongs) {
             songsName.add(song.getName());
 
-            if (songsName.size() == 5) {
+            if (songsName.size() == LIMIT) {
                 break;
             }
         }
@@ -50,7 +53,12 @@ public class HomePage extends BasePage {
         return songsName;
     }
 
-    public static ArrayList<String> setFollowedPlaylists(ArrayList<Playlist> playlists) {
+    /**
+     * get topFollowedPlaylists
+     * @param playlists all user playlists
+     * @return topFollowedPlaylists list
+     */
+    public static ArrayList<String> setFollowedPlaylists(final ArrayList<Playlist> playlists) {
         ArrayList<String> followedPlaylists = new ArrayList<>();
         ArrayList<Playlist> sortedPlaylists = new ArrayList<>(playlists);
 
@@ -58,7 +66,7 @@ public class HomePage extends BasePage {
         for (Playlist playlist : sortedPlaylists) {
             followedPlaylists.add(playlist.getName());
 
-            if (followedPlaylists.size() == 5) {
+            if (followedPlaylists.size() == LIMIT) {
                 break;
             }
         }
@@ -66,82 +74,23 @@ public class HomePage extends BasePage {
         return followedPlaylists;
     }
 
+    /**
+     * Print HomePage of the user
+     * @param normalUser the user for whom the page will be printed
+     * @return content of the page in a string
+     */
     @Override
-    public String printPage(NormalUser normalUser) {
+    public String printPage(final NormalUser normalUser) {
         ArrayList<Song> likedSongs = normalUser.getLikedSongs();
-        ArrayList<String> topLikedSongs = HomePage.setTopLikedSongs(likedSongs);
+        ArrayList<String> topLikedSongsName = HomePage.setTopLikedSongs(likedSongs);
         ArrayList<String> topFollowedPlaylistsName =
                 setFollowedPlaylists(normalUser.getFollowedPlaylists());
 
         normalUser.setHomePage(new HomePage(likedSongs, normalUser.getFollowedPlaylists(),
-                                topLikedSongs, topFollowedPlaylistsName));
+                                topLikedSongsName, topFollowedPlaylistsName));
 
-        return "Liked songs:\n\t" + topLikedSongs + "\n\n" + "Followed playlists:\n\t" +
-                topFollowedPlaylistsName;
+        return "Liked songs:\n\t" + topLikedSongsName + "\n\n" + "Followed playlists:\n\t"
+                + topFollowedPlaylistsName;
     }
 
 }
-
-//    @Getter
-//    private ArrayList<String> topLikedSongs;
-//    @Getter
-//    private ArrayList<String> topFollowedPlaylists;
-//
-//
-//    public HomePage() {
-//        super(null);
-//    }
-//    public HomePage(ArrayList<String> topLikedSongs, ArrayList<String> topFollowedPlaylists,
-//                    String owner) {
-//
-//        super(owner);
-//        this.topLikedSongs = topLikedSongs;
-//        this.topFollowedPlaylists = topFollowedPlaylists;
-//    }
-//
-//
-//    public static ArrayList<String> setLikedSongs(ArrayList<Song> songs) {
-//        ArrayList<String> songsName = new ArrayList<>();
-//        List<Song> sortedSongs = new ArrayList<>(songs);
-//        sortedSongs.sort(Comparator.comparingInt(Song::getLikes).reversed());
-//        for (Song song : sortedSongs) {
-//            songsName.add(song.getName());
-//
-//            if (songsName.size() == 5) {
-//                break;
-//            }
-//        }
-//
-//        return songsName;
-//    }
-//
-//
-//    public static ArrayList<String> setFollowedPlaylists(ArrayList<Playlist> playlists) {
-//        ArrayList<String> followedPlaylists = new ArrayList<>();
-//        ArrayList<Playlist> sortedPlaylists = new ArrayList<>(playlists);
-//
-//        sortedPlaylists.sort(Comparator.comparingInt(Playlist::getTotalLikes).reversed());
-//        for (Playlist playlist : sortedPlaylists) {
-//            followedPlaylists.add(playlist.getName());
-//
-//            if (followedPlaylists.size() == 5) {
-//                break;
-//            }
-//        }
-//
-//        return followedPlaylists;
-//    }
-//
-//
-//    @Override
-//    public String printPage(NormalUser normalUser) {
-//        ArrayList<String> topLikedSongs = HomePage.setLikedSongs(normalUser.getLikedSongs());
-//        ArrayList<String> followedPlaylist =
-//                HomePage.setFollowedPlaylists(normalUser.getPlaylists());
-//
-//        normalUser.setHomePage(new HomePage(topLikedSongs, followedPlaylist,
-//                normalUser.getUsername()));
-//
-//        return "Liked songs:\n\t" + topLikedSongs + "\n\n" + "Followed playlists:\n\t" +
-//                followedPlaylist;
-//    }

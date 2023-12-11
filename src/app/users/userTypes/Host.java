@@ -19,7 +19,7 @@ public class Host extends User {
     private ArrayList<Podcast> podcasts;
     private ArrayList<Announcement> announcements;
 
-    public Host(String username, int age, String city) {
+    public Host(final String username, final int age, final String city) {
         super(username, age, city);
         super.setType("host");
 
@@ -28,31 +28,58 @@ public class Host extends User {
 
     }
 
+    /**
+     * Gets the host podcasts.
+     * @return host podcasts
+     */
     public ArrayList<Podcast> getPodcasts() {
         return podcasts;
     }
-    public void setPodcasts(ArrayList<Podcast> podcasts) {
+
+    /**
+     * Sets the host podcasts.
+     * @param podcasts new podcasts
+     */
+    public void setPodcasts(final ArrayList<Podcast> podcasts) {
         this.podcasts = podcasts;
     }
 
-    public void setPodcast(Podcast podcast) {
+    /**
+     * Sets a new podcast.
+     * @param podcast the new podcast
+     */
+    public void setPodcast(final Podcast podcast) {
         podcasts.add(podcast);
     }
 
+    /**
+     * Gets the host announcements.
+     * @return the announcements
+     */
     public ArrayList<Announcement> getAnnouncements() {
         return announcements;
     }
-    public void setAnnouncements(ArrayList<Announcement> announcements) {
+
+    /**
+     * Sets the announcements.
+     * @param announcements announcements
+     */
+    public void setAnnouncements(final ArrayList<Announcement> announcements) {
         this.announcements = announcements;
     }
 
-
-    public static String addPodcast(CommandInput commandInput, User user) {
+    /**
+     * Add a new podcast to the host.
+     * @param commandInput the command input
+     * @param user user that called that command
+     * @return the message of the command
+     */
+    public static String addPodcast(final CommandInput commandInput, final User user) {
         if (user == null) {
             return "The username " + user.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("host")) {
             return user.getUsername() + " is not a host.";
-        } else if (((Host)user).hostHasPodcast(commandInput.getName())) {
+        } else if (((Host) user).hostHasPodcast(commandInput.getName())) {
             return user.getUsername() + " has another podcast with the same name.";
         }
 
@@ -81,19 +108,24 @@ public class Host extends User {
 
         Podcast newPodcast = new Podcast(podcastName, owner, episodes);
         Admin.setPodcast(newPodcast);
-        ((Host)user).setPodcast(newPodcast);
+        ((Host) user).setPodcast(newPodcast);
 
         return user.getUsername() + " has added new podcast successfully.";
     }
 
-    public static String removePodcast(CommandInput commandInput) {
+    /**
+     * Remove a podcast from the Host.
+     * @param commandInput the command input
+     * @return the message of the command
+     */
+    public static String removePodcast(final CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
 
         if (user == null) {
             return "The username " + commandInput.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("host")) {
             return user.getUsername() + " is not a host.";
-        } else if (!((Host)user).hostHasPodcast(commandInput.getName())) {
+        } else if (!((Host) user).hostHasPodcast(commandInput.getName())) {
             return user.getUsername() + " doesn't have a podcast with the given name.";
         }
 
@@ -101,7 +133,7 @@ public class Host extends User {
         Host host = (Host) user;
         Podcast podcastToDelete = new Podcast();
 
-        for (Podcast podcast : host.getPodcasts()) {
+        for (Podcast podcast : host.podcasts) {
             if (podcast.getName().equals(commandInput.getName())) {
                 podcastToDelete = podcast;
                 break;
@@ -124,10 +156,15 @@ public class Host extends User {
 
     }
 
-    public static ArrayList<PodcastOutput> showPodcasts(User user) {
-        Host host = (Host)user;
+    /**
+     * Show podcasts of the host.
+     * @param user the host
+     * @return the list of podcasts
+     */
+    public static ArrayList<PodcastOutput> showPodcasts(final User user) {
+        Host host = (Host) user;
 
-        if(host.getPodcasts() == null) {
+        if (host.podcasts == null) {
             System.out.println("No podcasts:(");
             return null;
         }
@@ -135,44 +172,51 @@ public class Host extends User {
         return PodcastOutput.podcastOutput(host.getPodcasts());
     }
 
-    public static String addAnnouncement(CommandInput commandInput, User user) {
+    /**
+     * Add a new announcement to the host.
+     * @param commandInput the command input
+     * @param user the user who called the command
+     * @return the message of the command
+     */
+    public static String addAnnouncement(final CommandInput commandInput, final User user) {
         if (user == null) {
             return "The username " + commandInput.getUsername() + "doesn't exist.";
         } else if (!user.getType().equals("host")) {
             return commandInput.getUsername() + " is not a host.";
         }
 
-        Host host = (Host)user;
+        Host host = (Host) user;
         String announcementName = commandInput.getName();
 
-        if (host.getAnnouncements().stream().anyMatch
-                (announcement -> announcementName.equals(announcement.getName()))) {
+        if (host.announcements.stream().anyMatch(
+                announcement -> announcementName.equals(announcement.getName()))) {
             return host.getUsername() + " has already added an announcement with this name.";
         }
 
-        host.getAnnouncements().add(new Announcement(announcementName, commandInput.getDescription()));
+        host.announcements.add(new Announcement(announcementName, commandInput.getDescription()));
 
         return host.getUsername() + " has successfully added new announcement.";
     }
 
-    public static String removeAnnouncement(CommandInput commandInput, User user) {
+    /**
+     * Remove host announcement.
+     * @param commandInput the command input
+     * @param user user that called the removeAnnouncement command
+     * @return the message of the command
+     */
+    public static String removeAnnouncement(final CommandInput commandInput, final User user) {
         if (user == null) {
             return "The username " + commandInput.getUsername() + "doesn't exist.";
         } else if (!user.getType().equals("host")) {
             return commandInput.getUsername() + " is not a host.";
         }
 
-        Host host = (Host)user;
+        Host host = (Host) user;
         String announcementName = commandInput.getName();
 
-//        if (host.getAnnouncements().stream().noneMatch
-//                (announcement -> announcementName.equals(announcement.getName()))) {
-//            return host.getUsername() + " has no announcement with the given name.";
-//        }
-
-        for (Announcement announcement : host.getAnnouncements()) {
+        for (Announcement announcement : host.announcements) {
             if (announcement.getName().equals(announcementName)) {
-                host.getAnnouncements().remove(announcement);
+                host.announcements.remove(announcement);
                 return host.getUsername() + " has successfully deleted the announcement.";
             }
         }
@@ -180,12 +224,16 @@ public class Host extends User {
         return host.getUsername() + " has no announcement with the given name.";
     }
 
+    /**
+     * Delete host podcasts from everywhere, announcements.
+     * @return boolean
+     */
     public boolean deleteHostData() {
         List<NormalUser> normalUsers = Admin.getNormalUsers();
 
         //verificare daca nici un user normal nu se afla pe pagina artistului
         for (NormalUser normalUser : normalUsers) {
-            if (normalUser.getConnectionStatus().equals(Enums.connectionStatus.OFFLINE)) {
+            if (normalUser.getConnectionStatus().equals(Enums.ConnectionStatus.OFFLINE)) {
                 continue;
             }
 
@@ -229,7 +277,12 @@ public class Host extends User {
         return true;
     }
 
-    public boolean hostHasPodcast(String podcastName) {
+    /**
+     * Verify if host has a podcast.
+     * @param podcastName podcast name that should be verified
+     * @return boolean
+     */
+    public boolean hostHasPodcast(final String podcastName) {
         if (this.podcasts == null) {
             return false;
         } else {

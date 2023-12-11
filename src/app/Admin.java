@@ -10,7 +10,12 @@ import app.users.userTypes.Artist;
 import app.users.userTypes.Host;
 import app.users.userTypes.NormalUser;
 import app.utils.Enums;
-import fileio.input.*;
+
+import fileio.input.PodcastInput;
+import fileio.input.SongInput;
+import fileio.input.CommandInput;
+import fileio.input.EpisodeInput;
+import fileio.input.UserInput;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,12 +35,17 @@ public final class Admin {
     private Admin() {
     }
 
+    /**
+     * Singleton lazy instantiation
+     * @return instance of the Admin class
+     */
     public static Admin getInstance() {
         if (instance == null) {
             instance = new Admin();
         }
         return instance;
     }
+
     /**
      * Sets users.
      *
@@ -44,11 +54,16 @@ public final class Admin {
     public void setUsers(final List<UserInput> userInputList) {
         users = new ArrayList<>();
         for (UserInput userInput : userInputList) {
-            users.add(new NormalUser(userInput.getUsername(), userInput.getAge(), userInput.getCity()));
+            users.add(new NormalUser(userInput.getUsername(), userInput.getAge(),
+                                            userInput.getCity()));
         }
     }
 
-    public static void setUser(User newUser) {
+    /**
+     *  Add one new user
+     * @param newUser new user
+     */
+    public static void setUser(final User newUser) {
         users.add(newUser);
     }
 
@@ -66,7 +81,11 @@ public final class Admin {
         }
     }
 
-    public static void setSong(Song song) {
+    /**
+     * Add new song
+     * @param song new song
+     */
+    public static void setSong(final Song song) {
         Admin.songs.add(song);
     }
 
@@ -88,13 +107,14 @@ public final class Admin {
         }
     }
 
+
+    /**
+     * Add new podcast
+     * @param podcast new podcast
+     */
     public static void setPodcast(final Podcast podcast) {
         podcasts.add(podcast);
     }
-
-//    public static void setAlbum(final Album album) {
-//        albums.add(album);
-//    }
 
     /**
      * Gets users.
@@ -120,6 +140,10 @@ public final class Admin {
         return null;
     }
 
+    /**
+     * Get all existing normal users
+     * @return normal users list
+     */
     public static List<NormalUser> getNormalUsers() {
         List<NormalUser> normalUsers = new ArrayList<>();
 
@@ -132,6 +156,10 @@ public final class Admin {
         return normalUsers;
     }
 
+    /**
+     * Get all existing artists
+     * @return artistts list
+     */
     public static List<Artist> getArtists() {
         List<Artist> artists = new ArrayList<>();
 
@@ -144,12 +172,14 @@ public final class Admin {
         return artists;
     }
 
+    /**
+     * get Admin songs
+     * @return songs list
+     */
     public static List<Song> getAdminSongs() {
         return songs;
     }
-//    public static List<Album> getAdminAlbums() {
-//        return albums;
-//    }
+
     /**
      * Gets songs.
      *
@@ -189,23 +219,32 @@ public final class Admin {
         List<Playlist> playlists = new ArrayList<>();
         for (User user : users) {
             if (user.getType().equals("user")) {
-                playlists.addAll(((NormalUser)user).getPlaylists());
+                playlists.addAll(((NormalUser) user).getPlaylists());
             }
         }
         return playlists;
     }
 
+    /**
+     * get all albums of all artists
+     * @return list of albums
+     */
     public static List<Album> getAllAlbums() {
         List<Album> albums = new ArrayList<>();
         for (User user : users) {
             if (user.getType().equals("artist")) {
-                albums.addAll(((Artist)user).getAlbums());
+                albums.addAll(((Artist) user).getAlbums());
             }
         }
         return albums;
     }
 
-    public static String deleteUser(CommandInput commandInput) {
+    /**
+     * delete one user
+     * @param commandInput input command
+     * @return the message result of the deleting
+     */
+    public static String deleteUser(final CommandInput commandInput) {
         User user = getUser(commandInput.getUsername());
 
         if (user == null) {
@@ -214,7 +253,7 @@ public final class Admin {
 
         switch (user.getType()) {
             case "user" -> {
-                if (((NormalUser)user).deleteNormalUserData()) {
+                if (((NormalUser) user).deleteNormalUserData()) {
                     users.remove(user);
                     return commandInput.getUsername() + " was successfully deleted.";
                 } else {
@@ -222,7 +261,7 @@ public final class Admin {
                 }
             }
             case "artist" -> {
-                if (((Artist)user).deleteArtistData()) {
+                if (((Artist) user).deleteArtistData()) {
                     users.remove(user);
                     return commandInput.getUsername() + " was successfully deleted.";
                 } else {
@@ -230,16 +269,18 @@ public final class Admin {
                 }
             }
             case "host" -> {
-                if (((Host)user).deleteHostData()) {
+                if (((Host) user).deleteHostData()) {
                     users.remove(user);
                     return commandInput.getUsername() + " was successfully deleted.";
                 } else {
                     return commandInput.getUsername() + " can't be deleted.";
                 }
             }
+            default -> {
+                return "Not existing type of user.";
+            }
         }
 
-        return "The command is not satisfying the user type requirements.";
     }
 
     /**
@@ -256,7 +297,7 @@ public final class Admin {
 
         for (User user : users) {
             if (user.getType().equals("user")) {
-                ((NormalUser)user).simulateTime(elapsed);
+                ((NormalUser) user).simulateTime(elapsed);
             }
         }
     }
@@ -303,6 +344,10 @@ public final class Admin {
         return topPlaylists;
     }
 
+    /**
+     * Get top 5 albums
+     * @return the list of names of top 5 albums
+     */
     public static List<String> getTop5Albums() {
         List<Album> sortedAlbums = new ArrayList<>(getAllAlbums());
         sortedAlbums.sort(Comparator.comparingInt(Album::getLikes)
@@ -321,6 +366,10 @@ public final class Admin {
         return topAlbums;
     }
 
+    /**
+     * Get top 5 artists
+     * @return the list of names of top 5 artists
+     */
     public static List<String> getTop5Artists() {
         List<Artist> sortedArtists = getArtists();
         sortedArtists.sort(Comparator.comparingInt(Artist::getArtistLikes)
@@ -342,12 +391,16 @@ public final class Admin {
         return topArtists;
     }
 
+    /**
+     * Get online users
+     * @return online users
+     */
     public static List<String> getOnlineUsers() {
         List<User> normalUsers = new ArrayList<>(users);
         List<String> onlineUsers = new ArrayList<>();
-        for(User user : normalUsers) {
+        for (User user : normalUsers) {
             if (user.getType().equals("user")) {
-                if (((NormalUser)user).getConnectionStatus() == Enums.connectionStatus.ONLINE) {
+                if (((NormalUser) user).getConnectionStatus() == Enums.ConnectionStatus.ONLINE) {
                     onlineUsers.add(user.getUsername());
                 }
             }
@@ -356,6 +409,10 @@ public final class Admin {
 
     }
 
+    /**
+     * get all existing users in Admin
+     * @return all users
+     */
     public static List<String> getAllUsers() {
         List<String> normalUsers = new ArrayList<>();
         List<String> artists = new ArrayList<>();

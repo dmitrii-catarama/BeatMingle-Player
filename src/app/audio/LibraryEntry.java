@@ -130,6 +130,10 @@ public abstract class LibraryEntry {
         return false;
     }
 
+    /**
+     * toString method override.
+     * @return "name" field in string format
+     */
     @Override
     public String toString() {
         return name;

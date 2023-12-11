@@ -2,10 +2,7 @@ package app.searchBar;
 
 
 import app.Admin;
-import app.audio.Collections.Album;
 import app.audio.LibraryEntry;
-import app.users.User;
-import app.users.userTypes.Artist;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -58,11 +55,11 @@ public final class SearchBar {
         lastSearchType = null;
     }
 
-    public void setSelectedPageType(String selectedPageType) {
+    public void setSelectedPageType(final String selectedPageType) {
         this.selectedPageType = selectedPageType;
     }
 
-    public void setSelectedUserPage(LibraryEntry selectedUserPage) {
+    public void setSelectedUserPage(final LibraryEntry selectedUserPage) {
         this.selectedUserPage = selectedUserPage;
     }
 

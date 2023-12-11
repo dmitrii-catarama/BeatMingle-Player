@@ -13,11 +13,17 @@ import java.util.List;
 public class UserSearch extends LibraryEntry {
 
 
-    public UserSearch(String creatorName) {
+    public UserSearch(final String creatorName) {
         super(creatorName);
     }
 
-    public static ArrayList<LibraryEntry> getCreators(List<User> users, String type) {
+    /**
+     * Get list of all hosts or artists. Necessary for filtering
+     * @param users all users
+     * @param type type of users to be returned
+     * @return list of users names
+     */
+    public static ArrayList<LibraryEntry> getCreators(final List<User> users, final String type) {
         ArrayList<LibraryEntry> artistsName = new ArrayList<>();
 
         if (type.equals("artist")) {

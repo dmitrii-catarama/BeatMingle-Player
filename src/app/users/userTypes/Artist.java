@@ -4,12 +4,9 @@ import app.Admin;
 import app.audio.Collections.Album;
 import app.audio.Collections.AlbumOutput;
 import app.audio.Collections.Playlist;
-import app.audio.Collections.PodcastOutput;
 import app.audio.Collections.Utilities.forArtist.Event;
 import app.audio.Collections.Utilities.forArtist.Merch;
-import app.audio.Collections.Utilities.forHost.Announcement;
 import app.audio.Files.Song;
-import app.audio.LibraryEntry;
 import app.player.PlayerStats;
 import app.users.User;
 import app.utils.Enums;
@@ -26,7 +23,7 @@ public class Artist extends User {
     private ArrayList<Merch> merch;
     private ArrayList<Event> events;
 
-    public Artist(String username, int age, String city) {
+    public Artist(final String username, final int age, final String city) {
         super(username, age, city);
         super.setType("artist");
 
@@ -35,30 +32,52 @@ public class Artist extends User {
         events = new ArrayList<>();
     }
 
+    /**
+     * Gets albums of the artist.
+     * @return albums
+     */
     public ArrayList<Album> getAlbums() {
         return albums;
     }
+
+    /**
+     * Gets merch of the artist.
+     * @return the merch
+     */
     public ArrayList<Merch> getMerch() {
         return merch;
     }
+
+    /**
+     * Gets events of the artist.
+     * @return events
+     */
     public ArrayList<Event> getEvents() {
         return events;
     }
 
-
-    public void setAlbum(Album album) {
+    /**
+     * Sets the new album in the albums collection.
+     * @param album the new album
+     */
+    public void setAlbum(final Album album) {
         albums.add(album);
     }
 
-
-    public static String addAlbum(CommandInput commandInput, User user) {
+    /**
+     * Verify if artist can add a new album.
+     * @param commandInput the command input
+     * @param user user that called the addAlbum command
+     * @return the message of the command
+     */
+    public static String addAlbum(final CommandInput commandInput, final User user) {
         String nameAlbum = commandInput.getName();
 
         if (user == null) {
             return "The username " + user.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("artist")) {
             return user.getUsername() + " is not an artist.";
-        } else if (artistHasAlbum(((Artist)user).getAlbums(), nameAlbum)) {
+        } else if (((Artist) user).artistHasAlbum(nameAlbum)) {
             return user.getUsername() + " has another album with the same name.";
         }
 
@@ -92,19 +111,24 @@ public class Artist extends User {
         for (Song song : newAlbum.getSongs()) {
             Admin.setSong(song);
         }
-        //Admin.setAlbum(newAlbum);
 
         return user.getUsername() + " has added new album successfully.";
     }
 
-    public static String removeAlbum(CommandInput commandInput, User user) {
+    /**
+     * Verify if an artist can delete the album.
+     * @param commandInput the command input
+     * @param user user that called the removeAlbum command
+     * @return the message of the command
+     */
+    public static String removeAlbum(final CommandInput commandInput, final User user) {
         String nameAlbum = commandInput.getName();
 
         if (user == null) {
             return "The username " + commandInput.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("artist")) {
             return user.getUsername() + " is not an artist.";
-        } else if (!artistHasAlbum(((Artist)user).getAlbums(), nameAlbum)) {
+        } else if (!((Artist) user).artistHasAlbum(nameAlbum)) {
             return user.getUsername() + " doesn't have an album with the given name.";
         }
 
@@ -163,22 +187,32 @@ public class Artist extends User {
         return artist.getUsername() + " deleted the album successfully.";
     }
 
-    public static ArrayList<AlbumOutput> showAlbums(User user) {
-        Artist artist = (Artist)user;
+    /**
+     * Show all albums of the artist.
+     * @param user the artist
+     * @return information about all albums
+     */
+    public static ArrayList<AlbumOutput> showAlbums(final User user) {
+        Artist artist = (Artist) user;
 
-        if(artist.getAlbums() == null) {
+        if (artist.albums == null) {
             System.out.println("No albums:(");
             return null;
         }
 
-        return AlbumOutput.albumOutput(artist.getAlbums());
+        return AlbumOutput.albumOutput(artist.albums);
     }
 
-    public static boolean artistHasAlbum(ArrayList<Album> albums, String albumName) {
-        if (albums == null) {
+    /**
+     * Verify if the artist has the album with a mentioned name
+     * @param albumName the mentioned name
+     * @return boolean
+     */
+    public boolean artistHasAlbum(final String albumName) {
+        if (this.albums == null) {
             return false;
         }
-        for (Album album : albums) {
+        for (Album album : this.albums) {
             if (album.getName().equals(albumName)) {
                 return true;
             }
@@ -186,30 +220,41 @@ public class Artist extends User {
         return false;
     }
 
-    public static String addEvent(CommandInput commandInput, User user) {
+    /**
+     * Add a new event.
+     * @param commandInput the command input
+     * @param user the user which called the command addEvent
+     * @return the message of the command
+     */
+    public static String addEvent(final CommandInput commandInput, final User user) {
         if (user == null) {
             return "The username " + commandInput.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("artist")) {
             return commandInput.getUsername() + " is not an artist.";
         }
 
-        Artist artist = (Artist)user ;
+        Artist artist = (Artist) user;
         String eventName = commandInput.getName();
 
-        if (artist.getEvents().stream().anyMatch(event -> eventName.equals(event.getName()))) {
+        if (artist.events.stream().anyMatch(event -> eventName.equals(event.getName()))) {
             return artist.getUsername() + " has another event with the same name.";
         }
         if (!Event.dateIsValid(commandInput.getDate())) {
             return "Event for " + artist.getUsername() + " does not have a valid date.";
         }
 
-        artist.getEvents().add(new Event(commandInput.getName(), commandInput.getDescription(),
+        artist.events.add(new Event(commandInput.getName(), commandInput.getDescription(),
                 commandInput.getDate()));
 
         return artist.getUsername() + " has added new event successfully.";
     }
 
-    public static String removeEvent(CommandInput commandInput) {
+    /**
+     * Remove an event.
+     * @param commandInput the command input
+     * @return the message of the command
+     */
+    public static String removeEvent(final CommandInput commandInput) {
         User user = Admin.getUser(commandInput.getUsername());
 
         if (user == null) {
@@ -218,16 +263,12 @@ public class Artist extends User {
             return commandInput.getUsername() + " is not an artist.";
         }
 
-        Artist artist = (Artist)user ;
+        Artist artist = (Artist) user;
         String eventDelete = commandInput.getName();
 
-//        if (artist.getEvents().stream().noneMatch(event -> eventDelete.equals(event.getName()))) {
-//            return artist.getUsername() + " doesn't have an event with the given name.";
-//        }
-
-        for (Event event : artist.getEvents()) {
+        for (Event event : artist.events) {
             if (event.getName().equals(eventDelete)) {
-                artist.getEvents().remove(event);
+                artist.events.remove(event);
                 return artist.getUsername() + " deleted the event successfully.";
             }
         }
@@ -235,19 +276,25 @@ public class Artist extends User {
         return artist.getUsername() + " doesn't have an event with the given name.";
     }
 
-    public static String addMerch(CommandInput commandInput, User user) {
+    /**
+     * Add a new merch.
+     * @param commandInput the command input
+     * @param user the user that called the command
+     * @return
+     */
+    public static String addMerch(final CommandInput commandInput, final User user) {
         if (user == null) {
             return "The username " + commandInput.getUsername() + " doesn't exist.";
         } else if (!user.getType().equals("artist")) {
             return commandInput.getUsername() + " is not an artist.";
         }
 
-        Artist artist = (Artist)user ;
+        Artist artist = (Artist) user;
         String merchName = commandInput.getName();
-        if (artist.getMerch().stream().anyMatch(event -> merchName.equals(event.getName()))) {
+        if (artist.merch.stream().anyMatch(event -> merchName.equals(event.getName()))) {
             return artist.getUsername() + " has merchandise with the same name.";
         }
-        if(!Merch.priceIsValid(commandInput.getPrice())) {
+        if (!Merch.priceIsValid(commandInput.getPrice())) {
             return "Price for merchandise can not be negative.";
         }
 
@@ -257,15 +304,18 @@ public class Artist extends User {
         return artist.getUsername() + " has added new merchandise successfully.";
     }
 
+    /**
+     * Delete the artist albums, events and merch.
+     * @return boolean
+     */
     public boolean deleteArtistData() {
-        //List<Album> allAlbums = Admin.getAdminAlbums();
         List<Song> allSongs = Admin.getAdminSongs();
         List<NormalUser> normalUsers = Admin.getNormalUsers();
 
         // verificare daca nici un user normal nu se afla pe pagina artistului si daca nu se
         // asculta un cantec din albumurile acestuia
         for (NormalUser normalUser : normalUsers) {
-            if (normalUser.getConnectionStatus().equals(Enums.connectionStatus.OFFLINE)) {
+            if (normalUser.getConnectionStatus().equals(Enums.ConnectionStatus.OFFLINE)) {
                 continue;
             }
 
@@ -321,6 +371,10 @@ public class Artist extends User {
         return true;
     }
 
+    /**
+     * Gets the artist likes from all songs from his albums.
+     * @return likes
+     */
     public Integer getArtistLikes() {
         Integer likes = 0;
 

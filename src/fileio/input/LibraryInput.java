@@ -19,13 +19,20 @@ public final class LibraryInput {
     }
 
 
+    /**
+     * Returns the singleton instance of the {@code LibraryInput} class, initializing it
+     * from a JSON file if it hasn't been initialized before.
+     *
+     * @return the singleton instance of the {@code LibraryInput} class
+     * @throws IOException if there is an issue reading the JSON file.
+     */
     public static LibraryInput getInstance() throws IOException {
         if (instance == null) {
             ObjectMapper instanceMapper = new ObjectMapper();
 
-            instance = instanceMapper.readValue(new File(CheckerConstants.TESTS_PATH
-                            + "library/library.json"),
-                    LibraryInput.class);;
+            instance = instanceMapper.readValue(
+                    new File(CheckerConstants.TESTS_PATH + "library/library.json"),
+                    LibraryInput.class);
         }
         return instance;
     }
