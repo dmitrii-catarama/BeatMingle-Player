@@ -1,3 +1,28 @@
-In clasa Artist in metoda addEvent am folosit stream() API ? cu ajutorul lui chatGPT.
-Am folosit clasa DateTimeFormatter in metoda verifyDate din clasa Event pentru
-a verifica daca formatul datei unui event este corect. GPT
+
+    Programul este bine structurat, comenzile din fisierele de teste sunt citite in
+clasa de baza Main, apoi, in functie de tipul comenzii se alege care metoda va fi accesata din
+clasa CommandRunner - care contine toate comenzile posibil de procesat.
+    CommandRunner functioneaza ca o clasa "intermediara", apeland la randul sau alte metode din
+clasele NormalUser, Artist, Host sau Admin, in dependente deja ce comanda carui tip de
+utiliazator e specifica (sau adminului).
+    Clasele facute in schelet care au suportat schimbari importante sunt clasele din package-ul
+"searchBar", "utils" si "player" caci am adaugat posibilitatea de ascultare si alegere a
+albumui, artistului si hostului In player am faut schimbari din cauza ca Albumul rulat trebuia
+sa preia comenzile specifice playlistului, cum ar fi : forward, backward, shuffle, repeat, etc.
+    Structura userului a fost modificata, pentru fiecare user am adaugat clase aparte si un
+package "pageSystem" care cintine clase pentru paginile fiecarui tip de user.
+
+Pentru rezolvarea etapei 2 a temei am folosit:
+  -  Mostenirea claselor. De exemplu in package-ul "users" unde am implementat clasa User si am
+     extins clasa in toate clasele din package-ul interior "userTypes".
+  -  Constructia de clase abstracte. De exemplu in package-ul "pageSystem" clasa BasePage
+     e abstracta din cauza ca nu am avut nevoie sa o instantiez, am dorit sa pastrez in ea
+     o metoda abstracta. Aceasta clasa a fost apoi extinsa.
+  -  Folosirea design patternului Singleton. Acesta a fost adaugat pentru clasele LibraryInput
+     si Admin pentru ca am vrut acces global la instanta unica a acestor clase si un singur
+     punct de gestionare pentru functionalitatile aplicatiei.
+
+    Am folosit ajutorul lui ChatGPT pentru intelegerea si folosirea corecta de stream() API,
+utilizat in metoda AddEvent() clasa Artist. De asemenea pentru intelegerea si folosirea corecta
+a clasei DateTimeFormatter in metoda verifyDate din clasa Event, folosit pentru a verifica
+daca formatul datei unui event nou este corect.

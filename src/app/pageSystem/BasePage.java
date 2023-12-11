@@ -21,11 +21,19 @@ public abstract class BasePage {
 
 
     /**
-     * update the followedPlaylists field
+     * Update the followedPlaylists field.
      * @param newFollowedPlaylists followedPlaylists
      */
     public void setPlaylists(final ArrayList<Playlist> newFollowedPlaylists) {
         this.followedPlaylists = newFollowedPlaylists;
+    }
+
+    /**
+     * Update the setLikedSongs field.
+     * @param likedSongs likedSongs
+     */
+    public void setLikedSongs(final ArrayList<Song> likedSongs) {
+        this.likedSongs = likedSongs;
     }
 
     /**
