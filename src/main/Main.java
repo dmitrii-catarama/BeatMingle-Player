@@ -69,50 +69,19 @@ public final class Main {
      */
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
+
         ObjectMapper objectMapper = new ObjectMapper();
-
-        // !!! PENTRU VERIFICAREA TESTELOR !!! //
-        String filePath3 = "test04_etapa2.json";
-        String filePath4 = "test05_etapa2_playPause_playlist_podcast.json";
-        String filePath5 = "test06_etapa2_repeat.json";
-        String filePath6 = "test07_etapa2_repeat_error.json";
-        String filePath7 = "test08_etapa2_searchHost_printCurrentPage.json";
-        String filePath8 = "test15_etapa2_complex.json";
-
-//        if (filePath1.equals("test00_etapa2.json")
-//                || filePath1.equals("test01_etapa2.json")
-//                || filePath1.equals("test02_etapa2.json")
-//                || filePath1.equals("test03_etapa2.json")
-//                || filePath1.equals("test04_etapa2.json")
-//                || filePath1.equals("test05_etapa2_playPause_playlist_podcast.json")
-//                || filePath1.equals("test06_etapa2_repeat.json")
-//                || filePath1.equals("test07_etapa2_repeat_error.json")
-//                || filePath1.equals("test08_etapa2_searchHost_printCurrentPage.json")
-//                || filePath1.equals("test09_etapa2_shuffle_album.json")
-//                || filePath1.equals("test10_etapa2_next_prev_forward_backward.json")
-//                || filePath1.equals("test11_etapa2_shuffle_error.json")
-//                || filePath1.equals("test12_etapa2_next_prev_forward_backward_error.json")
-//                || filePath1.equals("test13_statistics.json")
-//                || filePath1.equals("test14_etapa2_delete_cases.json")
-//                || filePath1.equals("test15_etapa2_complex.json")) {
-//
-//        } else {
-//            return;
-//        }
-        // !!! PENTRU VERIFICAREA TESTELOR !!! //
-
         CommandInput[] commands = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
                                                                   + filePath1),
                                                                   CommandInput[].class);
-        ArrayNode outputs = objectMapper.createArrayNode();
 
+        ArrayNode outputs = objectMapper.createArrayNode();
         LibraryInput library = LibraryInput.getInstance();
         Admin admin = Admin.getInstance();
 
         admin.setUsers(library.getUsers());
         admin.setSongs(library.getSongs());
         admin.setPodcasts(library.getPodcasts());
-        //Admin.setUsers(LibraryInput.getInstance().getUsers());
 
         for (CommandInput command : commands) {
             Admin.updateTimestamp(command.getTimestamp());
