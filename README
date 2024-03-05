@@ -12,7 +12,7 @@ sa preia comenzile specifice playlistului, cum ar fi : forward, backward, shuffl
     Structura userului a fost modificata, pentru fiecare user am adaugat clase aparte si un
 package "pageSystem" care cintine clase pentru paginile fiecarui tip de user.
 
-Pentru rezolvarea etapei 2 a temei am folosit:
+Pentru efectuarea acestui proiect am folosit:
   -  Mostenirea claselor. De exemplu in package-ul "users" unde am implementat clasa User si am
      extins clasa in toate clasele din package-ul interior "userTypes".
   -  Constructia de clase abstracte. De exemplu in package-ul "pageSystem" clasa BasePage
@@ -21,8 +21,4 @@ Pentru rezolvarea etapei 2 a temei am folosit:
   -  Folosirea design patternului Singleton. Acesta a fost adaugat pentru clasele LibraryInput
      si Admin pentru ca am vrut acces global la instanta unica a acestor clase si un singur
      punct de gestionare pentru functionalitatile aplicatiei.
-
-    Am folosit ajutorul lui ChatGPT pentru intelegerea si folosirea corecta de stream() API,
-utilizat in metoda AddEvent() clasa Artist. De asemenea pentru intelegerea si folosirea corecta
-a clasei DateTimeFormatter in metoda verifyDate din clasa Event, folosit pentru a verifica
-daca formatul datei unui event nou este corect.
+  -  Folosirea stream() API, clasei DateTimeFormatter
