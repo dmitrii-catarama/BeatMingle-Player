@@ -5,12 +5,9 @@ clasa CommandRunner - care contine toate comenzile posibil de procesat.
     CommandRunner functioneaza ca o clasa "intermediara", apeland la randul sau alte metode din
 clasele NormalUser, Artist, Host sau Admin, in dependente deja ce comanda carui tip de
 utiliazator e specifica (sau adminului).
-    Clasele facute in schelet care au suportat schimbari importante sunt clasele din package-ul
-"searchBar", "utils" si "player" caci am adaugat posibilitatea de ascultare si alegere a
-albumui, artistului si hostului In player am faut schimbari din cauza ca Albumul rulat trebuia
-sa preia comenzile specifice playlistului, cum ar fi : forward, backward, shuffle, repeat, etc.
-    Structura userului a fost modificata, pentru fiecare user am adaugat clase aparte si un
-package "pageSystem" care cintine clase pentru paginile fiecarui tip de user.
+    Utilizatorul poate sa utilizeze asa comenzi ca: Search, Select, Load, Like, Play, Pause,
+Repeat, Shuffle, Forward/Backward, AddPlaylist, AddRemoveInPlaylist, comenzi pentru diferite
+statistici, etc. Comenzile pot fi aplicate cantecelor, podcasturilor, playlisturilor si albumelor.
 
 Pentru efectuarea acestui proiect am folosit:
   -  Mostenirea claselor. De exemplu in package-ul "users" unde am implementat clasa User si am
